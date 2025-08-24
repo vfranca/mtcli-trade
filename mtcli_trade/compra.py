@@ -7,12 +7,22 @@ logger = setup_logger("mt5")  # Cria o logger
 
 
 @click.command()
-@click.option("--symbol", "-s", default="WINV25", help="Símbolo do ativo (default WINV25).")
-@click.option("--lot", "-l", type=float, default=1.0, help="Quantidade de contratos (default 1.0)")
-@click.option("-sl", type=float, default=150, help="Stop loss (em pontos) (default 150)")
-@click.option("-tp", type=float, default=300, help="Take profit (em pontos) (default 300)")
+@click.option(
+    "--symbol", "-s", default="WINV25", help="Símbolo do ativo (default WINV25)."
+)
+@click.option(
+    "--lot", "-l", type=float, default=1.0, help="Quantidade de contratos (default 1.0)"
+)
+@click.option(
+    "-sl", type=float, default=150, help="Stop loss (em pontos) (default 150)"
+)
+@click.option(
+    "-tp", type=float, default=300, help="Take profit (em pontos) (default 300)"
+)
 @click.option("--pendente", "-p", is_flag=True, help="Envia ordem pendente (buy limit)")
-@click.option("--preco", "-pr", type=float, default=None, help="Preço da ordem pendente")
+@click.option(
+    "--preco", "-pr", type=float, default=None, help="Preço da ordem pendente"
+)
 def compra(symbol, lot, sl, tp, pendente, preco):
     """Compra a mercado ou pendente (buy limit) com SL e TP"""
     conectar()
