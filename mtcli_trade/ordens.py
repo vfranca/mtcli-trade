@@ -1,10 +1,14 @@
 import click
 import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
+from mtcli.logger import setup_logger
+
+
+logger = setup_logger("trade")
 
 
 @click.command()
-@click.option("-s", "--symbol", default=None, help="Símbolo do ativo (opcional)")
+@click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
 def ordens(symbol):
     """Lista todas as ordens pendentes (ou de um símbolo)"""
     conectar()
@@ -20,11 +24,12 @@ def ordens(symbol):
             if symbol
             else "Nenhuma ordem pendente encontrada."
         )
-        click.echo(f"📭 {msg}")
+        click.echo(f"{msg}")
+        logger.info(f"{msg}.")
         shutdown()
         return
 
-    click.echo(f"📋 Ordens pendentes{' para ' + symbol if symbol else ''}:\n")
+    click.echo(f"Ordens pendentes{' para ' + symbol if symbol else ''}:\n")
     for o in ordens:
         tipo = (
             "COMPRA"
@@ -32,7 +37,14 @@ def ordens(symbol):
             else "VENDA" if o.type == mt5.ORDER_TYPE_SELL_LIMIT else str(o.type)
         )
         click.echo(
-            f"▶ {tipo} | {o.symbol} | volume: {o.volume_current} | preço: {o.price_open:.2f} | ticket: {o.ticket}"
+            f"{tipo} | {o.symbol} | volume: {o.volume_current} | preço: {o.price_open:.2f} | ticket: {o.ticket}"
+        )
+        logger.info(
+            f"{tipo} | {o.symbol} | volume: {o.volume_current} | preço: {o.price_open:.2f} | ticket: {o.ticket}"
         )
 
     shutdown()
+
+
+if __name__ == "__main__":
+    ordens()
