@@ -6,6 +6,8 @@ authors = [
     {name = "Valmir França da Silva",email = "vfranca3@gmail.com"}
 ]
 readme = "README.md"
+license = "GPL-3.0"
+repository = "https://github.com/vfranca/mtcli-trade"
 requires-python = ">=3.11,<3.14.0"
 packages = [{ include = "mtcli_trade" }]
 dependencies = [
