@@ -3,10 +3,10 @@ name = "mtcli-trade"
 version = "0.1.0"
 description = "Plugin mtcli para gerenciamento de órdens"
 authors = [
-    {name = "Valmir França",email = "vfranca3@gmail.com"}
+    {name = "Valmir França da Silva",email = "vfranca3@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12,<4.0.0"
+requires-python = ">=3.11,<3.14.0"
 packages = [{ include = "mtcli_trade" }]
 dependencies = [
     "mtcli (>=1.18.1,<2.0.0)"

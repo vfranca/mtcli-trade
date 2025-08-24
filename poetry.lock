@@ -96,14 +96,14 @@ numpy = ">=1.7"
 
 [[package]]
 name = "mtcli"
-version = "1.18.1"
+version = "1.19.0"
 description = "Aplicativo CLI para exibir gráficos do MetaTrader 5 em texto acessível ao leitor de telas"
 optional = false
-python-versions = "<4,>=3.11"
+python-versions = "<3.14.0,>=3.11"
 groups = ["main"]
 files = [
-    {file = "mtcli-1.18.1-py3-none-any.whl", hash = "sha256:9ce65cba7847e075f0b6b968517939fca61f286b4b990b6f153e533c36a9fbc1"},
-    {file = "mtcli-1.18.1.tar.gz", hash = "sha256:4ec3f3f02c13f5a70f13db1b36eefd976acc3487d36bc601572a4cf3a11d9e7e"},
+    {file = "mtcli-1.19.0-py3-none-any.whl", hash = "sha256:86f40981a4fa0e3a4f565718945f46e73df323ccd9a9b4ffbf9f45f8541af852"},
+    {file = "mtcli-1.19.0.tar.gz", hash = "sha256:61ff3855a0475ae668c845b5e17139fcb6e92c4dcb097b1dbe1bea6a2d0ef7bf"},
 ]
 
 [package.dependencies]
@@ -269,5 +269,5 @@ cli = ["click (>=5.0)"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.12,<4.0.0"
-content-hash = "d7a0a315b445e41751fc11fb98f25155d8281bbb018b5986734240017bd5001c"
+python-versions = ">=3.11,<3.14.0"
+content-hash = "ab1380a5639d66fdb5ac71aececa88c990163a11471a0df6f2462fdd1b0012b5"

@@ -1,6 +1,6 @@
 import click
 import MetaTrader5 as mt5
-from .conecta import conectar, shutdown
+from mtcli.conecta import conectar, shutdown
 
 
 @click.command()
