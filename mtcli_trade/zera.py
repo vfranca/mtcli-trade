@@ -3,8 +3,14 @@ import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 
 
+from mtcli.logger import setup_logger
+
+
+logger = setup_logger("trade")
+
+
 @click.command()
-@click.option("-s", "--symbol", default=None, help="Símbolo do ativo (opcional)")
+@click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
 def zera(symbol):
     """Encerra todas as posições abertas (ou de um símbolo)"""
     conectar()
@@ -17,7 +23,8 @@ def zera(symbol):
             if symbol
             else "Nenhuma posição encontrada."
         )
-        click.echo(f"📭 {msg}")
+        click.echo(f"{msg}")
+        logger.info(f"{msg}.")
         shutdown()
         return
 
@@ -42,13 +49,22 @@ def zera(symbol):
             "type_time": mt5.ORDER_TIME_GTC,
             "type_filling": mt5.ORDER_FILLING_IOC,
         }
+        logger.info(f"Órdem: {ordem}.")
 
         res = mt5.order_send(ordem)
         if res.retcode == mt5.TRADE_RETCODE_DONE:
-            click.echo(f"✅ Posição {p.ticket} ({p.symbol}) encerrada.")
+            click.echo(f"Posição {p.ticket} ({p.symbol}) encerrada.")
+            logger.info(f"Posição {p.ticket} ({p.symbol}) encerrada.")
         else:
             click.echo(
                 f"❌ Falha ao encerrar {p.symbol} (ticket {p.ticket}): {res.retcode}"
             )
+            logger.info(
+                f"❌ Falha ao encerrar {p.symbol} (ticket {p.ticket}): {res.retcode}"
+            )
 
     shutdown()
+
+
+if __name__ == "__main__":
+    zera()
