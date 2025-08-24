@@ -1,10 +1,14 @@
 import click
 import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
+from mtcli.logger import setup_logger
+
+
+logger = setup_logger("trade")
 
 
 @click.command()
-@click.option("-s", "--symbol", default=None, help="Símbolo do ativo (opcional)")
+@click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
 def posicoes(symbol):
     """Lista todas as posições abertas (ou de um símbolo)"""
     conectar()
@@ -17,15 +21,23 @@ def posicoes(symbol):
             if symbol
             else "Nenhuma posição aberta encontrada."
         )
-        click.echo(f"📭 {msg}")
+        click.echo(f"{msg}")
+        logger.info(f"{msg}.")
         shutdown()
         return
 
-    click.echo(f"📊 Posições abertas{' para ' + symbol if symbol else ''}:\n")
+    click.echo(f"Posições abertas{' para ' + symbol if symbol else ''}:\n")
     for p in posicoes:
         tipo = "COMPRA" if p.type == mt5.POSITION_TYPE_BUY else "VENDA"
         click.echo(
-            f"▶ {tipo} | {p.symbol} | volume: {p.volume:.2f} | preço: {p.price_open:.2f} | lucro: {p.profit:.2f}"
+            f"{tipo} | {p.symbol} | volume: {p.volume:.2f} | preço: {p.price_open:.2f} | lucro: {p.profit:.2f}"
+        )
+        logger.info(
+            f"{tipo} | {p.symbol} | volume: {p.volume:.2f} | preço: {p.price_open:.2f} | lucro: {p.profit:.2f}."
         )
 
     shutdown()
+
+
+if __name__ == "__main__":
+    posicoes()
