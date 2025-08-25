@@ -1,4 +1,6 @@
-digitos = 0
-stop_loss = 150
-take_profit = 300
-symbol = WINV25
+import os
+from mtcli import conf
+
+symbol = os.getenv("SYMBOL", "WINV25")
+sl = os.getenv("SL", 150)
+tp = os.getenv("TP", 300)
