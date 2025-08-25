@@ -63,7 +63,7 @@ def compra(symbol, lot, sl, tp, pendente, preco):
         "deviation": 10,
         "magic": 1000,
         "comment": "Compra OCO",
-        "type_time": mt5.ORDER_TIME_GTC,
+        "type_time": mt5.ORDER_TIME_DAY,
         "type_filling": mt5.ORDER_FILLING_IOC,
     }
     logger.info(f"Órdem enviada: {ordem}")
