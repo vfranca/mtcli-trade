@@ -30,14 +30,14 @@ def sell(symbol, lot, sl, tp, limit, preco):
     tick = mt5.symbol_info_tick(symbol)
     if not tick:
         click.echo(f"❌ Erro: símbolo '{symbol}' não encontrado.")
-        logger.error(f"Erro: símbolo '{symbol}' não encontrado.")
+        logger.error(f"Erro: símbolo '{symbol}' não encontrado")
         shutdown()
         return
 
     if limit:
         if preco is None:
-            click.echo("❌ Para ordens limits, defina o --preco.")
-            logger.error("Para ordens limits, defina o --preco.")
+            click.echo("❌ Para ordens pendente, defina o --preco.")
+            logger.warning("Para ordens pendente, defina o --preco.")
             shutdown()
             return
         price = preco
@@ -49,8 +49,8 @@ def sell(symbol, lot, sl, tp, limit, preco):
     sl_price = price + sl if sl > 0 else None
     tp_price = price - tp if tp > 0 else None
 
-    logger.info(f"Enviando ordem de VENDA {symbol} | lot: {lot} | SL: {sl} | TP: {tp}.")
-    logger.info(f"Preço atual: {price:.{conf.digitos}f}.")
+    logger.info(f"Enviando ordem de VENDA {symbol} | lot: {lot} | SL: {sl} | TP: {tp}")
+    logger.info(f"Preço atual: {price:.{conf.digitos}f}")
 
     ordem = {
         "action": mt5.TRADE_ACTION_PENDING if limit else mt5.TRADE_ACTION_DEAL,
@@ -66,19 +66,19 @@ def sell(symbol, lot, sl, tp, limit, preco):
         "type_time": mt5.ORDER_TIME_DAY,
         "type_filling": mt5.ORDER_FILLING_IOC,
     }
-    logger.info(f"Órdem enviada: {ordem}.")
+    logger.info(f"Órdem enviada: {ordem}")
 
     resultado = mt5.order_send(ordem)
     if resultado.retcode == mt5.TRADE_RETCODE_DONE:
         click.echo(
-            f"Ordem {'limit' if limit else 'a mercado'} enviada com sucesso: ticket {resultado.order}"
+            f"Ordem {'limitada' if limit else 'a mercado'} enviada com sucesso: ticket {resultado.order}"
         )
         logger.info(
-            f"Ordem {'limit' if limit else 'a mercado'} enviada com sucesso: ticket {resultado.order}."
+            f"Ordem {'limitada' if limit else 'a mercado'} enviada com sucesso: ticket {resultado.order}."
         )
     else:
         click.echo(f"❌ Falha ao enviar ordem: {resultado.retcode}")
-        logger.error(f"Erro ao enviar ordem: retcode {resultado.retcode}.")
+        logger.error(f"Erro ao enviar ordem: retcode {resultado.retcode}")
 
     shutdown()
 

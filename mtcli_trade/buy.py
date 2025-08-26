@@ -23,19 +23,20 @@ logger = setup_logger("trade")
 @click.option("--limit", "-l", is_flag=True, help="Envia ordem limit (buy limit)")
 @click.option("--preco", "-pr", type=float, default=None, help="Preço da ordem limit")
 def buy(symbol, lot, sl, tp, limit, preco):
-    """Compra a mercado ou limit (buy limit) com SL e TP"""
+    """Compra a mercado ou pendente com SL e TP."""
     conectar()
 
     tick = mt5.symbol_info_tick(symbol)
     if not tick:
         click.echo(f"❌ Erro: símbolo '{symbol}' não encontrado.")
-        logger.info(f"Erro: símbolo '{symbol}' não encontrado.")
+        logger.info(f"Erro: símbolo '{symbol}' não encontrado")
         shutdown()
         return
 
     if limit:
         if preco is None:
-            click.echo("❌ Para ordens limits, defina o --preco.")
+            click.echo("❌ Para ordens pendente, defina o --preco.")
+            logger.warning("❌ Para ordens pendente, defina o --preco")
             shutdown()
             return
         price = preco
@@ -68,15 +69,13 @@ def buy(symbol, lot, sl, tp, limit, preco):
 
     resultado = mt5.order_send(ordem)
     if resultado.retcode == mt5.TRADE_RETCODE_DONE:
-        click.echo(
-            f"✅ Ordem {'limit' if limit else 'a mercado'} enviada com sucesso: ticket {resultado.order}"
-        )
-        logger.info(
-            f"Ordem {'limit' if limit else 'a mercado'} enviada com sucesso: ticket {resultado.order}"
-        )
+        msg = f"Ordem {'limitada' if limit else 'a mercado'} de compra enviada com sucesso: ticket {resultado.order}"
+        click.echo(msg)
+        logger.info(msg)
     else:
-        click.echo(f"❌ Falha ao enviar ordem: {resultado.retcode}")
-        logger.error(f"Erro ao enviar ordem: retcode {resultado.retcode}.")
+        msg = f"❌ Falha ao enviar ordem de compra: {resultado.retcode}"
+        click.echo(msg)
+        logger.error(msg)
 
     shutdown()
 
