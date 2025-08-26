@@ -28,15 +28,17 @@ def buy(symbol, lot, sl, tp, limit, preco):
 
     tick = mt5.symbol_info_tick(symbol)
     if not tick:
-        click.echo(f"❌ Erro: símbolo '{symbol}' não encontrado.")
-        logger.info(f"Erro: símbolo '{symbol}' não encontrado")
+        msg = f"❌ Erro: símbolo '{symbol}' não encontrado"
+        click.echo(msg)
+        logger.error(msg)
         shutdown()
         return
 
     if limit:
         if preco is None:
-            click.echo("❌ Para ordens pendente, defina o --preco.")
-            logger.warning("❌ Para ordens pendente, defina o --preco")
+            msg = "❌ Para ordens pendente, defina o --preco"
+            click.echo(msg)
+            logger.warning(msg)
             shutdown()
             return
         price = preco
