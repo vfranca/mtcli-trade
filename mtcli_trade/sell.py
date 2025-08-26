@@ -24,7 +24,7 @@ logger = setup_logger("trade")
 @click.option("--limit", "-l", is_flag=True, help="Envia ordem limit (sell limit)")
 @click.option("--preco", "-pr", type=float, default=None, help="Preço da ordem limit")
 def sell(symbol, lot, sl, tp, limit, preco):
-    """Venda a mercado ou limit (sell limit) com sl e tp."""
+    """Venda a mercado ou pendente com sl e tp."""
     conectar()
 
     tick = mt5.symbol_info_tick(symbol)

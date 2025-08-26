@@ -10,7 +10,7 @@ logger = setup_logger("trade")
 @click.command()
 @click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
 def cancel(symbol):
-    """Cancela todas as ordens pendentes (ou de um símbolo específico)"""
+    """Cancela todas as ordens pendentes (ou de um símbolo)."""
     conectar()
 
     ordens = mt5.orders_get(symbol=symbol) if symbol else mt5.orders_get()
