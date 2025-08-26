@@ -29,15 +29,17 @@ def sell(symbol, lot, sl, tp, limit, preco):
 
     tick = mt5.symbol_info_tick(symbol)
     if not tick:
-        click.echo(f"❌ Erro: símbolo '{symbol}' não encontrado.")
-        logger.error(f"Erro: símbolo '{symbol}' não encontrado")
+        msg = f"❌ Erro: símbolo '{symbol}' não encontrado"
+        click.echo(msg)
+        logger.error(msg)
         shutdown()
         return
 
     if limit:
         if preco is None:
-            click.echo("❌ Para ordens pendente, defina o --preco.")
-            logger.warning("Para ordens pendente, defina o --preco.")
+            msg = "❌ Para ordens pendente, defina o --preco."
+            click.echo(msg)
+            logger.warning(msg)
             shutdown()
             return
         price = preco
@@ -70,15 +72,13 @@ def sell(symbol, lot, sl, tp, limit, preco):
 
     resultado = mt5.order_send(ordem)
     if resultado.retcode == mt5.TRADE_RETCODE_DONE:
-        click.echo(
-            f"Ordem {'limitada' if limit else 'a mercado'} enviada com sucesso: ticket {resultado.order}"
-        )
-        logger.info(
-            f"Ordem {'limitada' if limit else 'a mercado'} enviada com sucesso: ticket {resultado.order}."
-        )
+        msg = f"Ordem {'limitada' if limit else 'a mercado'} de venda enviada com sucesso: ticket {resultado.order}"
+        click.echo(msg)
+        logger.info(msg)
     else:
-        click.echo(f"❌ Falha ao enviar ordem: {resultado.retcode}")
-        logger.error(f"Erro ao enviar ordem: retcode {resultado.retcode}")
+        msg = f"❌ Falha ao enviar ordem de venda: {resultado.retcode}"
+        click.echo(msg)
+        logger.error(msg)
 
     shutdown()
 
