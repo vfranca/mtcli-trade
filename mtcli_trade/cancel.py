@@ -9,7 +9,7 @@ logger = setup_logger("trade")
 
 @click.command()
 @click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
-def cancela(symbol):
+def cancel(symbol):
     """Cancela todas as ordens pendentes (ou de um símbolo específico)"""
     conectar()
 
@@ -17,12 +17,12 @@ def cancela(symbol):
 
     if not ordens:
         msg = (
-            f"Nenhuma ordem pendente para {symbol}."
+            f"Nenhuma ordem pendente para {symbol}"
             if symbol
             else "Nenhuma ordem pendente encontrada."
         )
         click.echo(f"{msg}")
-        logger.info(f"{msg}.")
+        logger.info(f"{msg}")
         shutdown()
         return
 
@@ -40,13 +40,13 @@ def cancela(symbol):
         res = mt5.order_send(req)
         if res.retcode == mt5.TRADE_RETCODE_DONE:
             click.echo(f"Ordem cancelada: ticket {ordem.ticket} ({ordem.symbol})")
-            logger.info(f"Ordem cancelada: ticket {ordem.ticket} ({ordem.symbol}).")
+            logger.info(f"Ordem cancelada: ticket {ordem.ticket} ({ordem.symbol})")
         else:
             click.echo(f"❌ Falha ao cancelar {ordem.ticket}: código {res.retcode}")
-            logger.info(f"❌ Falha ao cancelar {ordem.ticket}: código {res.retcode}.")
+            logger.info(f"❌ Falha ao cancelar {ordem.ticket}: código {res.retcode}")
 
     shutdown()
 
 
 if __name__ == "__main__":
-    cancela()
+    cancel()

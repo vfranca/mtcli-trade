@@ -12,7 +12,7 @@ logger = setup_logger("trade")
     "--symbol", "-s", default="WINV25", help="Símbolo do ativo (default WINV25)."
 )
 @click.option(
-    "--lot", "-l", type=float, default=1.0, help="Quantidade de contratos (default 1.0)"
+    "--lot", type=float, default=1.0, help="Quantidade de contratos (default 1.0)"
 )
 @click.option(
     "-sl", type=float, default=150, help="Stop loss (em pontos) (default 150)"
@@ -20,12 +20,10 @@ logger = setup_logger("trade")
 @click.option(
     "-tp", type=float, default=300, help="Take profit (em pontos) (default 300)"
 )
-@click.option("--pendente", "-p", is_flag=True, help="Envia ordem pendente (buy limit)")
-@click.option(
-    "--preco", "-pr", type=float, default=None, help="Preço da ordem pendente"
-)
-def compra(symbol, lot, sl, tp, pendente, preco):
-    """Compra a mercado ou pendente (buy limit) com SL e TP"""
+@click.option("--limit", "-l", is_flag=True, help="Envia ordem limit (buy limit)")
+@click.option("--preco", "-pr", type=float, default=None, help="Preço da ordem limit")
+def buy(symbol, lot, sl, tp, limit, preco):
+    """Compra a mercado ou limit (buy limit) com SL e TP"""
     conectar()
 
     tick = mt5.symbol_info_tick(symbol)
@@ -35,9 +33,9 @@ def compra(symbol, lot, sl, tp, pendente, preco):
         shutdown()
         return
 
-    if pendente:
+    if limit:
         if preco is None:
-            click.echo("❌ Para ordens pendentes, defina o --preco.")
+            click.echo("❌ Para ordens limits, defina o --preco.")
             shutdown()
             return
         price = preco
@@ -53,7 +51,7 @@ def compra(symbol, lot, sl, tp, pendente, preco):
     logger.info(f"Preço atual: {price:.{conf.digitos}f}")
 
     ordem = {
-        "action": mt5.TRADE_ACTION_PENDING if pendente else mt5.TRADE_ACTION_DEAL,
+        "action": mt5.TRADE_ACTION_PENDING if limit else mt5.TRADE_ACTION_DEAL,
         "symbol": symbol,
         "volume": lot,
         "type": order_type,
@@ -71,10 +69,10 @@ def compra(symbol, lot, sl, tp, pendente, preco):
     resultado = mt5.order_send(ordem)
     if resultado.retcode == mt5.TRADE_RETCODE_DONE:
         click.echo(
-            f"✅ Ordem {'pendente' if pendente else 'a mercado'} enviada com sucesso: ticket {resultado.order}"
+            f"✅ Ordem {'limit' if limit else 'a mercado'} enviada com sucesso: ticket {resultado.order}"
         )
         logger.info(
-            f"Ordem {'pendente' if pendente else 'a mercado'} enviada com sucesso: ticket {resultado.order}"
+            f"Ordem {'limit' if limit else 'a mercado'} enviada com sucesso: ticket {resultado.order}"
         )
     else:
         click.echo(f"❌ Falha ao enviar ordem: {resultado.retcode}")
@@ -84,4 +82,4 @@ def compra(symbol, lot, sl, tp, pendente, preco):
 
 
 if __name__ == "__main__":
-    compra()
+    buy()
