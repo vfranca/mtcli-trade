@@ -1,5 +1,9 @@
 # mtcli-trade
+  
 Este é um plugin do mtcli que adiciona o comando trade para gerenciamento de ordens e posições.
+  
+--
+  
 ## Instalação
   
 ```cmd
