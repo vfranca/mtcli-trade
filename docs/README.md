@@ -10,7 +10,7 @@ Este é um plugin para mtcli que adiciona o comando trade para gerenciamento de 
 pip install mtcli-trade
 ```
   
----posições abertas 
+---
   
 ## Comandos
   
