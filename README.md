@@ -7,7 +7,5 @@ Este é um plugin para mtcli que adiciona o comando trade para gerenciamento de 
 ## Instalação
   
 ```cmd
-git clone git@github.com:vfranca/mtcli-trade.git
-cd mtcli-trade
-pip install .
+pip install mtcli-trade
 ```
