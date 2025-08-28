@@ -4,7 +4,7 @@ version = "1.0.1"
 description = "Plugin mtcli para gerenciamento de órdens"
 readme = "docs/README.md"
 authors = [
-    {name = "Valmir França da Silva",email = "vfranca3@gmail.com"}
+    { name = "Valmir França da Silva", email = "vfranca3@gmail.com" }
 ]
 license = "GPL-3.0"
 requires-python = ">=3.11,<3.14.0"
@@ -12,6 +12,9 @@ packages = [{ include = "mtcli_trade" }]
 dependencies = [
     "mtcli (>=1.18.1,<2.0.0)"
 ]
+
+[project.optional-dependencies]
+dev = ["black"]
 
 [project.urls]
 repository = "https://github.com/vfranca/mtcli-trade"
@@ -25,8 +28,3 @@ trade = "mtcli_trade.trade:trade"
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.group.dev.dependencies]
-black = "^25.1.0"
-
-
