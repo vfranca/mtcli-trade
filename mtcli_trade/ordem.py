@@ -1,3 +1,5 @@
+"""Modelo da execução da órdem."""
+
 import click
 import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
