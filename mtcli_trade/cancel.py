@@ -1,9 +1,11 @@
+"""Cancela todas as órdens pendentes."""
+
 import click
 import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 
-logger = setup_logger("trade")
+log = setup_logger("trade")
 
 
 @click.command()
@@ -21,7 +23,7 @@ def cancel(symbol):
             else "Nenhuma ordem pendente encontrada."
         )
         click.echo(f"{msg}")
-        logger.info(f"{msg}")
+        log.info(f"{msg}")
         shutdown()
         return
 
@@ -39,10 +41,10 @@ def cancel(symbol):
         res = mt5.order_send(req)
         if res.retcode == mt5.TRADE_RETCODE_DONE:
             click.echo(f"Ordem cancelada: ticket {ordem.ticket} ({ordem.symbol})")
-            logger.info(f"Ordem cancelada: ticket {ordem.ticket} ({ordem.symbol})")
+            log.info(f"Ordem cancelada: ticket {ordem.ticket} ({ordem.symbol})")
         else:
             click.echo(f"❌ Falha ao cancelar {ordem.ticket}: código {res.retcode}")
-            logger.info(f"❌ Falha ao cancelar {ordem.ticket}: código {res.retcode}")
+            log.info(f"❌ Falha ao cancelar {ordem.ticket}: código {res.retcode}")
 
     shutdown()
 

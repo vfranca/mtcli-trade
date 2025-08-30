@@ -29,8 +29,6 @@ log = setup_logger("trade")
 @click.option("--preco", "-pr", type=float, default=None, help="Preço da ordem limit")
 def sell(symbol, lot, sl, tp, limit, preco):
     """Venda a mercado ou pendente com sl e tp."""
-    conectar()
-
     tick = inicializar(symbol)
     if not tick:
         return

@@ -1,9 +1,11 @@
+"""Comando para encerrar todas as posições."""
+
 import click
 import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 
-logger = setup_logger("trade")
+log = setup_logger("trade")
 
 
 @click.command()
@@ -21,7 +23,7 @@ def zera(symbol):
             else "Nenhuma posição encontrada."
         )
         click.echo(f"{msg}")
-        logger.info(f"{msg}.")
+        log.info(f"{msg}.")
         shutdown()
         return
 
@@ -46,17 +48,17 @@ def zera(symbol):
             "type_time": mt5.ORDER_TIME_GTC,
             "type_filling": mt5.ORDER_FILLING_IOC,
         }
-        logger.info(f"Órdem: {ordem}.")
+        log.info(f"Órdem: {ordem}.")
 
         res = mt5.order_send(ordem)
         if res.retcode == mt5.TRADE_RETCODE_DONE:
             click.echo(f"Posição {p.ticket} ({p.symbol}) encerrada.")
-            logger.info(f"Posição {p.ticket} ({p.symbol}) encerrada.")
+            log.info(f"Posição {p.ticket} ({p.symbol}) encerrada.")
         else:
             click.echo(
                 f"❌ Falha ao encerrar {p.symbol} (ticket {p.ticket}): {res.retcode}"
             )
-            logger.info(
+            log.info(
                 f"❌ Falha ao encerrar {p.symbol} (ticket {p.ticket}): {res.retcode}"
             )
 

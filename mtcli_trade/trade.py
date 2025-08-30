@@ -1,3 +1,5 @@
+"""Comando com subcomandos de trading."""
+
 import click
 
 from .buy import buy

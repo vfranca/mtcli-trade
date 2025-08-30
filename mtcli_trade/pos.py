@@ -1,3 +1,5 @@
+"""Comando para exibir todas as posições."""
+
 import click
 import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
@@ -5,7 +7,7 @@ from mtcli.logger import setup_logger
 
 from . import conf
 
-logger = setup_logger("trade")
+log = setup_logger("trade")
 
 
 @click.command()
@@ -23,7 +25,7 @@ def pos(symbol):
             else "Nenhuma posição aberta encontrada."
         )
         click.echo(f"{msg}")
-        logger.info(f"{msg}")
+        log.info(f"{msg}")
         shutdown()
         return
 
@@ -33,7 +35,7 @@ def pos(symbol):
         click.echo(
             f"{tipo} | {p.symbol} | volume: {p.volume:.2f} | preço: {p.price_open:.{conf.digitos}f} | lucro: {p.profit:.2f}"
         )
-        logger.info(
+        log.info(
             f"{tipo} | {p.symbol} | volume: {p.volume:.2f} | preço: {p.price_open:.{conf.digitos}f} | lucro: {p.profit:.2f}."
         )
 

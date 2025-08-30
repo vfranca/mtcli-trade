@@ -1,3 +1,5 @@
+"""Comando para exibir todas as órdens pendentes."""
+
 import click
 import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
@@ -5,7 +7,7 @@ from mtcli.logger import setup_logger
 
 from . import conf
 
-logger = setup_logger("trade")
+log = setup_logger("trade")
 
 
 @click.command()
@@ -26,7 +28,7 @@ def orders(symbol):
             else "Nenhuma ordem pendente encontrada."
         )
         click.echo(f"{msg}")
-        logger.info(f"{msg}")
+        log.info(f"{msg}")
         shutdown()
         return
 
@@ -40,7 +42,7 @@ def orders(symbol):
         click.echo(
             f"{tipo} | {o.symbol} | volume: {o.volume_current} | preço: {o.price_open:.{conf.digitos}f} | ticket: {o.ticket}"
         )
-        logger.info(
+        log.info(
             f"{tipo} | {o.symbol} | volume: {o.volume_current} | preço: {o.price_open:.{conf.digitos}f} | ticket: {o.ticket}"
         )
 
