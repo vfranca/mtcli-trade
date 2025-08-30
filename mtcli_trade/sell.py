@@ -2,10 +2,9 @@
 
 import click
 import MetaTrader5 as mt5
-from mtcli.conecta import conectar, shutdown
+from mtcli.conecta import shutdown
 from mtcli.logger import setup_logger
 
-from . import conf
 from .ordem import inicializar, criar_ordem, enviar_ordem
 
 log = setup_logger("trade")
