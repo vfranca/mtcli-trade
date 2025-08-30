@@ -1,4 +1,5 @@
 import os
+
 from mtcli.conf import *
 
 symbol = os.getenv("SYMBOL", "WINV25")

@@ -1,9 +1,10 @@
 import click
+
 from .buy import buy
-from .sell import sell
+from .cancel import cancel
 from .orders import orders
 from .pos import pos
-from .cancel import cancel
+from .sell import sell
 from .zera import zera
 
 

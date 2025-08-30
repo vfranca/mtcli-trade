@@ -3,7 +3,6 @@ import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 
-
 logger = setup_logger("trade")
 
 

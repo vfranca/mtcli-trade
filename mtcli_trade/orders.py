@@ -1,9 +1,9 @@
 import click
 import MetaTrader5 as mt5
-from . import conf
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 
+from . import conf
 
 logger = setup_logger("trade")
 
