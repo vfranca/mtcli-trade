@@ -3,7 +3,9 @@ SET CMD=%1
 
 IF "%CMD%"=="test" (
 	echo Executando testes...
-	pytest tests -v
+	REM pytest tests -v
+	coverage run -m pytest
+	coverage report -m
 	goto end
 )
 
