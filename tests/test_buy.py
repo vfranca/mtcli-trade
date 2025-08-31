@@ -2,13 +2,16 @@ import pytest
 from unittest.mock import patch, MagicMock
 from mtcli_trade.buy import buy
 
+
 @patch("mtcli_trade.buy.inicializar")
 @patch("mtcli_trade.buy.criar_ordem")
 @patch("mtcli_trade.buy.enviar_ordem")
 @patch("mtcli_trade.buy.shutdown")
 @patch("mtcli_trade.buy.conectar")
 @pytest.mark.skip(reason="Teste desativado temporariamente")
-def test_buy_market(mock_conectar, mock_shutdown, mock_enviar, mock_criar, mock_inicializar):
+def test_buy_market(
+    mock_conectar, mock_shutdown, mock_enviar, mock_criar, mock_inicializar
+):
     ctx = MagicMock()
     ctx.invoke = buy.callback
 
@@ -25,13 +28,16 @@ def test_buy_market(mock_conectar, mock_shutdown, mock_enviar, mock_criar, mock_
     mock_enviar.assert_called_once()
     mock_shutdown.assert_called_once()
 
+
 @patch("mtcli_trade.buy.inicializar")
 @patch("mtcli_trade.buy.criar_ordem")
 @patch("mtcli_trade.buy.enviar_ordem")
 @patch("mtcli_trade.buy.shutdown")
 @patch("mtcli_trade.buy.conectar")
 @pytest.mark.skip(reason="Teste desativado temporariamente")
-def test_buy_limit(mock_conectar, mock_shutdown, mock_enviar, mock_criar, mock_inicializar):
+def test_buy_limit(
+    mock_conectar, mock_shutdown, mock_enviar, mock_criar, mock_inicializar
+):
     mock_inicializar.return_value = MagicMock(ask=100000)
 
     result = buy.callback(
@@ -61,4 +67,3 @@ def test_buy_inicializar_falha(mock_conectar, mock_shutdown, mock_inicializar):
     mock_conectar.assert_called_once()
     mock_inicializar.assert_called_once()
     mock_shutdown.assert_called_once()
-

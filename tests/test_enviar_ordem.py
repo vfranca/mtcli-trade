@@ -1,6 +1,7 @@
 from unittest.mock import patch, MagicMock
 from mtcli_trade.ordem import enviar_ordem
 
+
 @patch("mtcli_trade.ordem.mt5.order_send")
 def test_enviar_ordem_sucesso(mock_send):
     resultado = MagicMock()
