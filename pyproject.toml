@@ -37,5 +37,4 @@ black = "^25.1.0"
 pytest-cov = "^6.2.1"
 
 [tool.pytest.ini_options]
-addopts = "-ra -q"
-testpaths = ["tests"]
+addopts = "--cov=mtcli_trade --cov-report=html -ra -q"
