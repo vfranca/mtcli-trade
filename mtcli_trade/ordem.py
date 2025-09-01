@@ -33,9 +33,9 @@ def criar_ordem(symbol, lot, sl, tp, price, order_type, limit):
         else price + sl * point
     )
     tp_price = (
-        price + tp
+        price + tp * point
         if order_type in (mt5.ORDER_TYPE_BUY, mt5.ORDER_TYPE_BUY_LIMIT)
-        else price - tp
+        else price - tp * point
     )
 
     return {
