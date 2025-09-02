@@ -6,7 +6,7 @@ from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 
 
-log = setup_logger("trade")
+log = setup_logger()
 
 
 def inicializar(symbol):
@@ -58,10 +58,10 @@ def enviar_ordem(ordem, limit):
     log.info(f"Enviando ordem: {ordem}")
     resultado = mt5.order_send(ordem)
     if resultado.retcode in (mt5.TRADE_RETCODE_DONE, mt5.TRADE_RETCODE_PLACED):
-        msg = f"Ordem {'limitada' if limit else 'a mercado'} enviada com sucesso: ticket {resultado.order}"
+        msg = f"Ordem {'limitada' if limit else 'a mercado'} enviada com sucesso ticket {resultado.order}"
         click.echo(msg)
         log.info(msg)
     else:
-        msg = f"❌ Falha ao enviar órdem : {resultado.retcode} - {resultado.comment}"
+        msg = f"❌ Falha ao enviar órdem {resultado.retcode} - {resultado.comment}"
         click.echo(msg)
         log.error(msg)

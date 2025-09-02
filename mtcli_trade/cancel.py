@@ -5,7 +5,7 @@ import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 
-log = setup_logger("trade")
+log = setup_logger()
 
 
 @click.command()
@@ -40,11 +40,12 @@ def cancel(symbol):
 
         res = mt5.order_send(req)
         if res.retcode == mt5.TRADE_RETCODE_DONE:
-            click.echo(f"Ordem cancelada: ticket {ordem.ticket} ({ordem.symbol})")
+            click.echo(f"Ordem cancelada {ordem.ticket} {ordem.symbol}")
             log.info(f"Ordem cancelada: ticket {ordem.ticket} ({ordem.symbol})")
         else:
-            click.echo(f"❌ Falha ao cancelar {ordem.ticket}: código {res.retcode}")
-            log.info(f"❌ Falha ao cancelar {ordem.ticket}: código {res.retcode}")
+            msg = f"❌ Falha ao cancelar {ordem.ticket} código {res.retcode}"
+            click.echo(msg)
+            log.error(msg)
 
     shutdown()
 

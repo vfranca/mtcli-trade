@@ -5,7 +5,7 @@ import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 
-log = setup_logger("trade")
+log = setup_logger()
 
 
 @click.command()
@@ -52,13 +52,13 @@ def zera(symbol):
 
         res = mt5.order_send(ordem)
         if res.retcode == mt5.TRADE_RETCODE_DONE:
-            click.echo(f"Posição {p.ticket} ({p.symbol}) encerrada.")
+            click.echo(f"Posição {p.ticket} {p.symbol} encerrada")
             log.info(f"Posição {p.ticket} ({p.symbol}) encerrada.")
         else:
             click.echo(
-                f"❌ Falha ao encerrar {p.symbol} (ticket {p.ticket}): {res.retcode}"
+                f"❌ Falha ao encerrar {p.symbol} ticket {p.ticket}: {res.retcode}"
             )
-            log.info(
+            log.error(
                 f"❌ Falha ao encerrar {p.symbol} (ticket {p.ticket}): {res.retcode}"
             )
 

@@ -13,8 +13,8 @@ IF /i "%CMD%"=="lint" (
 	goto end
 )
 
-IF "%CMD%"=="format" (
-	echo Formatando o código com black...
+IF /i "%CMD%"=="format" (
+	echo Formatando o codigo com black...
 	poetry run black mtcli_trade tests
     goto end
 )

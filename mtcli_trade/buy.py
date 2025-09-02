@@ -7,7 +7,7 @@ from mtcli.logger import setup_logger
 
 from .ordem import criar_ordem, enviar_ordem, inicializar
 
-log = setup_logger("trade")
+log = setup_logger()
 
 
 @click.command()

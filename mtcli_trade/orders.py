@@ -7,7 +7,7 @@ from mtcli.logger import setup_logger
 
 from . import conf
 
-log = setup_logger("trade")
+log = setup_logger()
 
 
 @click.command()
@@ -40,7 +40,7 @@ def orders(symbol):
             else "VENDA" if o.type == mt5.ORDER_TYPE_SELL_LIMIT else str(o.type)
         )
         click.echo(
-            f"{tipo} | {o.symbol} | volume: {o.volume_current} | preço: {o.price_open:.{conf.digitos}f} | ticket: {o.ticket}"
+            f"{tipo} {o.symbol} {o.volume_current} {o.price_open:.{conf.digitos}f} ticket {o.ticket}"
         )
         log.info(
             f"{tipo} | {o.symbol} | volume: {o.volume_current} | preço: {o.price_open:.{conf.digitos}f} | ticket: {o.ticket}"
