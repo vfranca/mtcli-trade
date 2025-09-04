@@ -2,7 +2,7 @@
 name = "mtcli-trade"
 version = "1.2.0"
 description = "Plugin mtcli para gerenciamento de órdens"
-readme = "docs/README.md"
+readme = "README.md"
 authors = [
     { name = "Valmir França da Silva", email = "vfranca3@gmail.com" }
 ]
