@@ -1,0 +1,10 @@
+site_name: mtcli-trade
+site_url: https://mtcli-trade.readthedocs.io
+repo_url: https://github.com/vfranca/mtcli-trade
+theme:
+  name: material
+
+nav:
+  - Início: index.md
+  - Uso: uso.md
+  - Configuração: configuracao.md
