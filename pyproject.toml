@@ -38,7 +38,6 @@ pytest-cov = "^6.2.1"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.1"
-mkdocs-material = "^9.6.18"
 
 [tool.pytest.ini_options]
 addopts = "--cov=mtcli_trade --cov-report=html -ra -q"

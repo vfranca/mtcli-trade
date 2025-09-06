@@ -2,7 +2,7 @@ site_name: mtcli-trade
 site_url: https://mtcli-trade.readthedocs.io
 repo_url: https://github.com/vfranca/mtcli-trade
 theme:
-  name: material
+  name: readthedocs
 
 nav:
   - Início: index.md
