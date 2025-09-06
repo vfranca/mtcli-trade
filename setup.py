@@ -3,12 +3,17 @@ from setuptools import setup, find_packages
 setup(
     name="mtcli-trade",
     version="1.2.0",
-    description="Plugin mtcli para gerenciamento de ordens",
+    description="Plugin mtcli para gerenciamento de órdens e posições",
     author="Valmir França da Silva",
     author_email="vfranca3@gmail.com",
-    packages=find_packages(include=["mtcli_trade", "mtcli_trade.*"]),
-    python_requires=">=3.10,<3.14",
+    packages=find_packages(),
     install_requires=[
-        "mtcli>=1.18.1,<2.0.0"
+        "mtcli>=1.19.4,<2.0.0",
     ],
+    entry_points={
+        "mtcli.plugins": [
+            "trade = mtcli_trade.trade:trade",
+        ],
+    },
+    python_requires='>=3.10,<3.14',
 )
