@@ -1,6 +1,6 @@
 [project]
 name = "mtcli-trade"
-version = "1.2.0"
+version = "1.2.1"
 description = "Plugin mtcli para gerenciamento de órdens"
 readme = "README.md"
 authors = [
@@ -9,7 +9,7 @@ authors = [
 license = "GPL-3.0"
 requires-python = ">=3.10,<3.14.0"
 dependencies = [
-    "mtcli (>=1.18.1,<2.0.0)"
+    "mtcli"
 ]
 
 [project.urls]
