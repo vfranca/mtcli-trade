@@ -12,7 +12,7 @@ setup(
     ],
     entry_points={
         "mtcli.plugins": [
-"trade = mtcli_trade.trade:trade"
+"mtcli-trade = mtcli_trade.trade:trade"
         ]
     },
 )
