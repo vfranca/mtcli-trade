@@ -464,24 +464,19 @@ pyyaml = ">=5.1"
 
 [[package]]
 name = "mtcli"
-version = "1.19.4"
+version = "2.1.1"
 description = "Aplicativo CLI para exibir gráficos do MetaTrader 5 em texto acessível ao leitor de telas"
 optional = false
 python-versions = "<3.14.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "mtcli-1.19.4-py3-none-any.whl", hash = "sha256:7f55fdbc0b247712f853459fc1a812aef5e885f44a80732565863c3114905a93"},
-    {file = "mtcli-1.19.4.tar.gz", hash = "sha256:7179bf6db84d85354702438e5e0dd6a3fe8c46176f7f69e93d98e978d3221089"},
+    {file = "mtcli-2.1.1-py3-none-any.whl", hash = "sha256:a38e226592ef3b59f0339e351c6c8e13eca4f0ec2e410d4b2edd26ce92589c42"},
+    {file = "mtcli-2.1.1.tar.gz", hash = "sha256:1b5760a577aff03cb9f1bb7e7435d9f8f4c605b9e07ae1b52f8d7ab305fb5a79"},
 ]
 
 [package.dependencies]
-click = ">=8.2.0,<9.0.0"
-metatrader5 = ">=5.0.4993,<6.0.0"
-numpy = ">=2.2.5,<3.0.0"
-python-dotenv = ">=1.1.0,<2.0.0"
-
-[package.extras]
-build = ["pyinstaller"]
+click = ">=8.2.1,<9.0.0"
+metatrader5 = ">=5.0.5260,<6.0.0"
 
 [[package]]
 name = "mypy-extensions"
@@ -710,21 +705,6 @@ files = [
 
 [package.dependencies]
 six = ">=1.5"
-
-[[package]]
-name = "python-dotenv"
-version = "1.1.1"
-description = "Read key-value pairs from a .env file and set them as environment variables"
-optional = false
-python-versions = ">=3.9"
-groups = ["main"]
-files = [
-    {file = "python_dotenv-1.1.1-py3-none-any.whl", hash = "sha256:31f23644fe2602f88ff55e1f5c79ba497e01224ee7737937930c448e4d0e24dc"},
-    {file = "python_dotenv-1.1.1.tar.gz", hash = "sha256:a8a6399716257f45be6a007360200409fce5cda2661e3dec71d23dc15f6189ab"},
-]
-
-[package.extras]
-cli = ["click (>=5.0)"]
 
 [[package]]
 name = "pyyaml"

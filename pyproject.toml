@@ -1,6 +1,6 @@
 [project]
 name = "mtcli-trade"
-version = "1.2.1"
+version = "1.2.2"
 description = "Plugin mtcli para gerenciamento de órdens"
 readme = "README.md"
 authors = [
@@ -22,8 +22,8 @@ issues = "https://github.com/vfranca/mtcli-trade/issues"
 mtcli-trade = "mtcli_trade.trade:trade"
 
 [build-system]
-requires = ["setuptools>=42"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"
