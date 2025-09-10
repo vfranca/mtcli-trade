@@ -29,7 +29,7 @@ Pré-requisitos
   
 - Windows com MetaTrader 5 instalado
 - Python 3.10 a 3.13
-- mtcli instalado previamente
+
   
 ```bash
 pip install mtcli-trade

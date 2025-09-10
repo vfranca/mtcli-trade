@@ -33,6 +33,7 @@ tox = "^4.29.0"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.1"
+pymdown-extensions = "^10.16.1"
 
 [tool.pytest.ini_options]
 addopts = "--cov=mtcli_trade --cov-report=html -ra -q"

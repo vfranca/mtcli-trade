@@ -1,10 +1,22 @@
 site_name: mtcli-trade
-site_url: https://mtcli-trade.readthedocs.io
 repo_url: https://github.com/vfranca/mtcli-trade
+repo_name: vfranca/mtcli-trade
+
 theme:
-  name: readthedocs
+  name: mkdocs
+  locale: pt_BR
 
 nav:
   - Início: index.md
-  - Uso: uso.md
-  - Configuração: configuracao.md
+  
+markdown_extensions:
+  - toc:
+      permalink: true
+  - tables
+  - admonition
+  - codehilite
+  - footnotes
+  - def_list
+  - pymdownx.extra
+  - pymdownx.highlight
+  - pymdownx.superfences
