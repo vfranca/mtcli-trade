@@ -34,7 +34,7 @@ def sell(symbol, lot, sl, tp, limit, preco):
 
     if limit:
         if preco is None:
-            click.echo("❌ Para ordens pendentes, defina o --preco")
+            click.echo("Para ordens pendentes, defina o --preco")
             shutdown()
             return
         price = preco

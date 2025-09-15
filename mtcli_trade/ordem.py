@@ -12,12 +12,12 @@ log = setup_logger()
 def inicializar(symbol):
     conectar()
     if not mt5.symbol_select(symbol, True):
-        click.echo(f"❌ Erro ao selecionar símbolo {symbol}")
+        click.echo(f"Erro ao selecionar símbolo {symbol}")
         shutdown()
         return None
     tick = mt5.symbol_info_tick(symbol)
     if not tick:
-        click.echo(f"❌ Erro ao obter cotação de {symbol}")
+        click.echo(f"Erro ao obter cotação de {symbol}")
         shutdown()
         return None
     return tick
@@ -62,6 +62,6 @@ def enviar_ordem(ordem, limit):
         click.echo(msg)
         log.info(msg)
     else:
-        msg = f"❌ Falha ao enviar órdem {resultado.retcode} - {resultado.comment}"
+        msg = f"Falha ao enviar órdem {resultado.retcode} - {resultado.comment}"
         click.echo(msg)
         log.error(msg)
