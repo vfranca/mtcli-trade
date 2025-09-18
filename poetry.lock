@@ -73,14 +73,14 @@ files = [
 
 [[package]]
 name = "click"
-version = "8.2.1"
+version = "8.3.0"
 description = "Composable command line interface toolkit"
 optional = false
 python-versions = ">=3.10"
 groups = ["main", "dev", "docs"]
 files = [
-    {file = "click-8.2.1-py3-none-any.whl", hash = "sha256:61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b"},
-    {file = "click-8.2.1.tar.gz", hash = "sha256:27c491cc05d968d271d5a1db13e3b5a184636d9d930f148c50b038f0d0646202"},
+    {file = "click-8.3.0-py3-none-any.whl", hash = "sha256:9b9f285302c6e3064f4330c05f05b81945b2a39544279343e6e7c5f27a9baddc"},
+    {file = "click-8.3.0.tar.gz", hash = "sha256:e7b8232224eba16f4ebe410c25ced9f7875cb5f3263ffc93cc3e8da705e229c4"},
 ]
 
 [package.dependencies]
@@ -464,14 +464,14 @@ pyyaml = ">=5.1"
 
 [[package]]
 name = "mtcli"
-version = "2.1.1"
+version = "2.3.0"
 description = "Aplicativo CLI para exibir gráficos do MetaTrader 5 em texto acessível ao leitor de telas"
 optional = false
 python-versions = "<3.14.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "mtcli-2.1.1-py3-none-any.whl", hash = "sha256:a38e226592ef3b59f0339e351c6c8e13eca4f0ec2e410d4b2edd26ce92589c42"},
-    {file = "mtcli-2.1.1.tar.gz", hash = "sha256:1b5760a577aff03cb9f1bb7e7435d9f8f4c605b9e07ae1b52f8d7ab305fb5a79"},
+    {file = "mtcli-2.3.0-py3-none-any.whl", hash = "sha256:23921c1b04af39139895303c22c40da4688c5ceeeae31700c1c940ca9bd0fa5d"},
+    {file = "mtcli-2.3.0.tar.gz", hash = "sha256:6a622047a00f71e19eb71bbc084146a06a241dd8a545e2175b24252817311de4"},
 ]
 
 [package.dependencies]
@@ -964,4 +964,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14.0"
-content-hash = "204fba89c0dddae63f036f0a44ed77b6f564e949bbc0365119b44772e8a5d55b"
+content-hash = "7193392c7193ba453081100d96f923fef52fd573514df976840358c42e59e386"
