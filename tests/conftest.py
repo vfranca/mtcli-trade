@@ -4,8 +4,10 @@ from unittest.mock import patch, MagicMock
 
 @pytest.fixture(autouse=True)
 def mock_mt5():
-    with patch("mtcli_trade.ordem.mt5") as mt5_mock, \
-         patch("mtcli_trade.risco.mt5") as mt5_risco_mock:
+    with (
+        patch("mtcli_trade.ordem.mt5") as mt5_mock,
+        patch("mtcli_trade.risco.mt5") as mt5_risco_mock,
+    ):
 
         # Configuração simulada da API MT5
         mt5_mock.symbol_select.return_value = True

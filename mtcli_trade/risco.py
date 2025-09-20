@@ -12,4 +12,3 @@ def risco_excedido(limite=LIMITE_DIARIO):
     if info is None:
         return False  # Em caso de falha ao obter info, não bloqueia por segurança
     return info.profit <= limite
-
