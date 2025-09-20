@@ -2,7 +2,7 @@
 
 import click
 import MetaTrader5 as mt5
-from mtcli.conecta import shutdown
+from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 from .ordem import criar_ordem, enviar_ordem, inicializar
 from .risco import risco_excedido  # <-- import do controle de risco
@@ -27,6 +27,7 @@ log = setup_logger()
 @click.option("--preco", "-pr", type=float, default=None, help="Preço da ordem limit")
 def buy(symbol, lot, sl, tp, limit, preco):
     """Compra a mercado ou pendente com SL e TP."""
+    conectar()
 
     # ⚠ Verifica risco antes de enviar qualquer ordem
     if risco_excedido():

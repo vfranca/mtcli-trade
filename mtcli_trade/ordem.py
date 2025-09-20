@@ -65,3 +65,4 @@ def enviar_ordem(ordem, limit):
         msg = f"Falha ao enviar órdem {resultado.retcode} - {resultado.comment}"
         click.echo(msg)
         log.error(msg)
+    return resultado

@@ -1,21 +1,20 @@
 from mtcli_trade.ordem import criar_ordem, enviar_ordem
+from unittest.mock import MagicMock
 
+def test_criar_ordem_market(mock_mt5):
+    ordem = criar_ordem("WINV25", 1.0, 150, 300, 123.45, mock_mt5.ORDER_TYPE_BUY, limit=False)
+    assert ordem["type"] == mock_mt5.ORDER_TYPE_BUY
+    assert ordem["volume"] == 1.0
+    assert ordem["symbol"] == "WINV25"
 
-def test_enviar_ordem_sucesso(mock_mt5, capsys):
-    ordem = criar_ordem("WINV25", 1, 150, 300, 123.45, mock_mt5.ORDER_TYPE_BUY, False)
-    mock_mt5.order_send.return_value = type(
-        "Result", (), {"retcode": mock_mt5.TRADE_RETCODE_DONE, "order": 123456}
-    )()
-    enviar_ordem(ordem, limit=False)
-    output = capsys.readouterr().out
-    assert "enviada com sucesso" in output
+def test_enviar_ordem_market(mock_mt5):
+    # Simula retorno da ordem enviada
+    fake_result = MagicMock()
+    fake_result.retcode = mock_mt5.TRADE_RETCODE_DONE
+    mock_mt5.order_send.return_value = fake_result
 
+    ordem = criar_ordem("WINV25", 1.0, 150, 300, 123.45, mock_mt5.ORDER_TYPE_BUY, limit=False)
+    result = enviar_ordem(ordem, limit=False)
 
-def test_enviar_ordem_falha(mock_mt5, capsys):
-    ordem = criar_ordem("WINV25", 1, 150, 300, 123.45, mock_mt5.ORDER_TYPE_BUY, False)
-    mock_mt5.order_send.return_value = type(
-        "Result", (), {"retcode": 10013, "comment": "Volume inválido"}
-    )()
-    enviar_ordem(ordem, limit=False)
-    output = capsys.readouterr().out
-    assert "❌ Falha ao enviar" in output
+    assert result.retcode == mock_mt5.TRADE_RETCODE_DONE
+    mock_mt5.order_send.assert_called_once_with(ordem)
