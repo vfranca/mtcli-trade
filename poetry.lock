@@ -481,14 +481,14 @@ metatrader5 = ">=5.0.5260,<6.0.0"
 
 [[package]]
 name = "mtcli-risco"
-version = "1.0.0"
+version = "1.2.0"
 description = "Plugin do mtcli"
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["main"]
 files = [
-    {file = "mtcli_risco-1.0.0-py3-none-any.whl", hash = "sha256:e1933a63ae5a63b8f25bdf145633cc25b6ee392e74b6792074d546981ea3ddc3"},
-    {file = "mtcli_risco-1.0.0.tar.gz", hash = "sha256:5f887d2ad49124226672731094c79760d6088fec2b30f5499b9a886ad32001f4"},
+    {file = "mtcli_risco-1.2.0-py3-none-any.whl", hash = "sha256:071d7d5c4b08b728cad401eb847bd3b33a4f7cec31bbe5c6afe056bd9cc05831"},
+    {file = "mtcli_risco-1.2.0.tar.gz", hash = "sha256:977686e20a9baab826fca57127cdb49bb88f10e978f036683b3d65c8b7fe5725"},
 ]
 
 [package.dependencies]
@@ -995,4 +995,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14.0"
-content-hash = "770b15cf7aefa3ad9b78bab31ffb4329dee621e435679a90065501c721ce57d5"
+content-hash = "0dcf661fbfbced286c4db7e9abff9052f57988f728f514cf34a371c609880df7"

@@ -6,7 +6,7 @@ from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 from .risco import controlar_risco
 from .ordem import inicializar, criar_ordem, enviar_ordem
-from .conf import LOSS_LIMIT, ARQUIVO_ESTADO
+from .conf import LOSS_LIMIT, STATUS_FILE
 
 log = setup_logger()
 
@@ -32,7 +32,7 @@ def sell(symbol, lot, sl, tp, limit, preco):
     conectar()
 
     # ⚠ Verifica risco antes de enviar qualquer ordem
-    if controlar_risco(ARQUIVO_ESTADO, LOSS_LIMIT):
+    if controlar_risco(STATUS_FILE, LOSS_LIMIT):
         click.echo("Ordem bloqueada: limite de prejuízo diário atingido.")
         log.info("Envio de ordem bloqueado por risco.")
         shutdown()
