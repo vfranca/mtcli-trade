@@ -1,14 +1,64 @@
-from mtcli_trade import risco
-from unittest.mock import MagicMock, patch
+import pytest
+from datetime import date
+from unittest.mock import patch
+from mtcli_trade.risco import controlar_risco
 
 
-def test_risco_excedido_true():
-    with patch("mtcli_trade.risco.mt5.account_info") as mock_info:
-        mock_info.return_value = MagicMock(profit=-500.0)
-        assert risco.risco_excedido() is True
+@patch("mtcli_trade.risco.carregar_estado")
+@patch("mtcli_trade.risco.salvar_estado")
+@patch("mtcli_trade.risco.risco_excedido", return_value=True)
+@patch("mtcli_trade.risco.encerrar_todas_posicoes")
+@patch("mtcli_trade.risco.cancelar_todas_ordens")
+def test_controlar_risco_limite_excedido(
+    mock_cancelar,
+    mock_encerrar,
+    mock_risco_excedido,
+    mock_salvar_estado,
+    mock_carregar_estado,
+    caplog,
+):
+    mock_carregar_estado.return_value = {"data": "2020-01-01", "bloqueado": False}
+
+    with caplog.at_level("INFO"):
+        bloqueado = controlar_risco("estado.json", -100)
+
+    assert bloqueado is True
+    mock_encerrar.assert_called_once()
+    mock_cancelar.assert_called_once()
+    mock_salvar_estado.assert_called_once()
+    assert any("limite diário" in m.lower() for m in caplog.messages)
 
 
-def test_risco_excedido_false():
-    with patch("mtcli_trade.risco.mt5.account_info") as mock_info:
-        mock_info.return_value = MagicMock(profit=100.0)
-        assert risco.risco_excedido() is False
+@patch("mtcli_trade.risco.carregar_estado")
+@patch("mtcli_trade.risco.salvar_estado")
+def test_controlar_risco_ja_bloqueado(mock_salvar_estado, mock_carregar_estado, caplog):
+    mock_carregar_estado.return_value = {
+        "data": date.today().isoformat(),
+        "bloqueado": True,
+    }
+
+    with caplog.at_level("INFO"):
+        bloqueado = controlar_risco("estado.json", -1000)
+
+    assert bloqueado is True
+    mock_salvar_estado.assert_not_called()
+    assert any("bloqueado hoje por risco" in m.lower() for m in caplog.messages)
+
+
+@patch("mtcli_trade.risco.carregar_estado")
+@patch("mtcli_trade.risco.salvar_estado")
+@patch("mtcli_trade.risco.risco_excedido", return_value=False)
+def test_controlar_risco_dentro_do_limite(
+    mock_risco_excedido,
+    mock_salvar_estado,
+    mock_carregar_estado,
+):
+    mock_carregar_estado.return_value = {
+        "data": date.today().isoformat(),
+        "bloqueado": False,
+    }
+
+    bloqueado = controlar_risco("estado.json", -1000)
+
+    assert bloqueado is False
+    mock_risco_excedido.assert_called_once()

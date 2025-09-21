@@ -9,7 +9,8 @@ authors = [
 license = "GPL-3.0"
 requires-python = ">=3.10,<3.14.0"
 dependencies = [
-    "mtcli>=1.18.1"
+    "mtcli>=1.18.1",
+    "mtcli-risco>=1.0.0",
 ]
 
 [project.urls]

@@ -4,8 +4,9 @@ import click
 import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
-from .risco import risco_excedido
+from .risco import controlar_risco
 from .ordem import inicializar, criar_ordem, enviar_ordem
+from .conf import LOSS_LIMIT, ARQUIVO_ESTADO
 
 log = setup_logger()
 
@@ -31,9 +32,9 @@ def sell(symbol, lot, sl, tp, limit, preco):
     conectar()
 
     # ⚠ Verifica risco antes de enviar qualquer ordem
-    if risco_excedido():
-        click.echo("🚫 Ordem bloqueada: limite de prejuízo diário atingido.")
-        log.warning("Envio de ordem bloqueado por risco.")
+    if controlar_risco(ARQUIVO_ESTADO, LOSS_LIMIT):
+        click.echo("Ordem bloqueada: limite de prejuízo diário atingido.")
+        log.info("Envio de ordem bloqueado por risco.")
         shutdown()
         return
 
