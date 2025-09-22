@@ -5,7 +5,7 @@ import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 
-from . import conf
+from .conf import DIGITOS
 
 log = setup_logger()
 
@@ -33,10 +33,10 @@ def pos(symbol):
     for p in posicoes:
         tipo = "COMPRA" if p.type == mt5.POSITION_TYPE_BUY else "VENDA"
         click.echo(
-            f"{tipo} {p.symbol} {p.volume:.2f} {p.price_open:.{conf.digitos}f} lucro {p.profit:.2f}"
+            f"{tipo} {p.symbol} {p.volume:.2f} {p.price_open:.{DIGITOS}f} lucro {p.profit:.2f}"
         )
         log.info(
-            f"{tipo} | {p.symbol} | volume: {p.volume:.2f} | preço: {p.price_open:.{conf.digitos}f} | lucro: {p.profit:.2f}."
+            f"{tipo} | {p.symbol} | volume: {p.volume:.2f} | preço: {p.price_open:.{DIGITOS}f} | lucro: {p.profit:.2f}."
         )
 
     shutdown()
