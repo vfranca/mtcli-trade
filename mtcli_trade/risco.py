@@ -2,7 +2,7 @@
 
 from datetime import date
 from mtcli.logger import setup_logger
-from mtcli_risco.risco import (
+from mtcli_risco.models.risco import (
     carregar_estado,
     salvar_estado,
     risco_excedido,
