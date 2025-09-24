@@ -6,23 +6,28 @@ from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 from .ordem import criar_ordem, enviar_ordem, inicializar
 from .risco import controlar_risco
-from .conf import LOSS_LIMIT, STATUS_FILE
+from .conf import (
+    SYMBOL,
+    LOT,
+    SL,
+    TP,
+    LOSS_LIMIT,
+    STATUS_FILE,
+)
 
 log = setup_logger()
 
 
 @click.command()
 @click.option(
-    "--symbol", "-s", default="WINV25", help="Símbolo do ativo (default WINV25)."
+    "--symbol", "-s", default=SYMBOL, help="Símbolo do ativo (default WINV25)."
 )
 @click.option(
-    "--lot", type=float, default=1.0, help="Quantidade de contratos (default 1.0)"
+    "--lot", type=float, default=LOT, help="Quantidade de contratos (default 1.0)"
 )
+@click.option("-sl", type=float, default=SL, help="Stop loss (em pontos) (default 150)")
 @click.option(
-    "-sl", type=float, default=150, help="Stop loss (em pontos) (default 150)"
-)
-@click.option(
-    "-tp", type=float, default=300, help="Take profit (em pontos) (default 300)"
+    "-tp", type=float, default=TP, help="Take profit (em pontos) (default 300)"
 )
 @click.option("--limit", "-l", is_flag=True, help="Envia ordem limit (buy limit)")
 @click.option("--preco", "-pr", type=float, default=None, help="Preço da ordem limit")
