@@ -1,6 +1,6 @@
 [project]
 name = "mtcli-trade"
-version = "1.5.0"
+version = "1.5.0.dev"
 description = "Plugin mtcli para gerenciamento de órdens"
 readme = "README.md"
 authors = [
@@ -20,7 +20,7 @@ repository = "https://github.com/vfranca/mtcli-trade"
 issues = "https://github.com/vfranca/mtcli-trade/issues"
 
 [project.entry-points."mtcli.plugins"]
-mtcli-trade = "mtcli_trade.plugin:cli"
+mtcli_trade = "mtcli_trade.plugin:register"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

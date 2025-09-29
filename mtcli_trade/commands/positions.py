@@ -5,14 +5,14 @@ import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 
-from .conf import DIGITOS
+from mtcli_trade.conf import DIGITOS
 
 log = setup_logger()
 
 
-@click.command()
+@click.command("pos")
 @click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
-def pos(symbol):
+def positions(symbol):
     """Lista todas as posições abertas (ou de um símbolo)"""
     conectar()
 
@@ -43,4 +43,4 @@ def pos(symbol):
 
 
 if __name__ == "__main__":
-    pos()
+    positions()

@@ -1,6 +1,5 @@
-"""Comando para encerrar todas as posições."""
+"""Gerenciamento de posiçõs e órdens pendentes."""
 
-import click
 import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
@@ -8,25 +7,31 @@ from mtcli.logger import setup_logger
 log = setup_logger()
 
 
-@click.command()
-@click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
-def zera(symbol):
-    """Encerra todas as posições abertas (ou de um símbolo)"""
+def existem_posicoes(symbol = None) -> bool:
+    """Verifica se existem posiçõs abertas."""
     conectar()
 
     posicoes = mt5.positions_get(symbol=symbol) if symbol else mt5.positions_get()
 
     if not posicoes:
-        msg = (
-            f"Nenhuma posição para {symbol}."
+        log.info(
+            f"Nenhuma posição para {symbol}"
             if symbol
-            else "Nenhuma posição encontrada."
+            else "Nenhuma posição encontrada"
         )
-        click.echo(f"{msg}")
-        log.info(f"{msg}.")
         shutdown()
-        return
+        return False
+    else:
+        return True
 
+
+def encerra_posicoes(symbol = None):
+    """Encerra todas as posições abertas (ou de um símbolo)"""
+    conectar()
+
+    posicoes = mt5.positions_get(symbol=symbol) if symbol else mt5.positions_get()
+    log.debug(posicoes)
+    resultados = []
     for p in posicoes:
         ordem = {
             "action": mt5.TRADE_ACTION_DEAL,
@@ -48,22 +53,14 @@ def zera(symbol):
             "type_time": mt5.ORDER_TIME_GTC,
             "type_filling": mt5.ORDER_FILLING_IOC,
         }
-        log.info(f"Órdem: {ordem}.")
+        log.debug(f"Requisição para zerar posições: {ordem}.")
 
-        res = mt5.order_send(ordem)
-        if res.retcode == mt5.TRADE_RETCODE_DONE:
-            click.echo(f"Posição {p.ticket} {p.symbol} encerrada")
+        resultado = mt5.order_send(ordem)
+        if resultado.retcode == mt5.TRADE_RETCODE_DONE:
             log.info(f"Posição {p.ticket} ({p.symbol}) encerrada.")
         else:
-            click.echo(
-                f"❌ Falha ao encerrar {p.symbol} ticket {p.ticket}: {res.retcode}"
-            )
-            log.error(
-                f"❌ Falha ao encerrar {p.symbol} (ticket {p.ticket}): {res.retcode}"
-            )
+                log.error(f"Falha ao encerrar {p.symbol} (ticket {p.ticket}): {resultado.retcode}")
+        resultados.append(resultado)
 
     shutdown()
-
-
-if __name__ == "__main__":
-    zera()
+    return resultados

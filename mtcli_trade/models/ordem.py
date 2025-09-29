@@ -57,6 +57,7 @@ def criar_ordem(symbol, lot, sl, tp, price, order_type, limit):
 def enviar_ordem(ordem, limit):
     log.info(f"Enviando ordem: {ordem}")
     resultado = mt5.order_send(ordem)
+    log.debug(f"Resultado do envio da órdem models.ordem.py: {ordem}")
     if resultado.retcode in (mt5.TRADE_RETCODE_DONE, mt5.TRADE_RETCODE_PLACED):
         msg = f"Ordem {'limitada' if limit else 'a mercado'} enviada com sucesso ticket {resultado.order}"
         click.echo(msg)
