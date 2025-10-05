@@ -4,12 +4,13 @@ import click
 import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
-from mtcli_trade.models.gerencia import existem_posicoes, encerra_posicoes
+from mtcli_trade.models.posicoes_model import existem_posicoes, encerra_posicoes
 
 log = setup_logger()
 
 
 @click.command("zera")
+@click.version_option(package_name="mtcli-trade")
 @click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
 def zera(symbol):
     """Encerra todas as posições abertas (ou de um símbolo)"""
@@ -22,7 +23,9 @@ def zera(symbol):
     if resultados:
         click.echo("Todas as posições foram encerradas")
         for r in resultados:
-            click.echo(f"{r.order} ativo {r.request.symbol} volume {r.volume} preco {r.price}")
+            click.echo(
+                f"{r.order} ativo {r.request.symbol} volume {r.volume} preco {r.price}"
+            )
         return
     else:
         click.echo("Falha ao encerrar posiçõs")

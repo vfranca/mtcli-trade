@@ -1,6 +1,6 @@
 import pytest
 from click.testing import CliRunner
-from mtcli_trade.buy import buy
+from mtcli_trade.commands.buy import buy
 
 
 def test_cli_compra_market(mock_mt5):

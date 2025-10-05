@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import patch, MagicMock
 from mtcli_trade.models import orders_model
 
+
 @patch("mtcli_trade.models.orders_model.mt5")
 @patch("mtcli_trade.models.orders_model.shutdown")
 @patch("mtcli_trade.models.orders_model.conectar")
@@ -11,6 +12,7 @@ def test_buscar_ordens_sem_symbol(mock_conectar, mock_shutdown, mock_mt5):
     assert ordens == ["ordem1"]
     mock_conectar.assert_called_once()
     mock_shutdown.assert_called_once()
+
 
 def test_formatar_ordem():
     ordem = MagicMock()
@@ -26,4 +28,3 @@ def test_formatar_ordem():
     assert result["volume"] == 2.0
     assert "preco" in result
     assert result["ticket"] == 9999
-

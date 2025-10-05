@@ -1,4 +1,4 @@
-from mtcli_trade.models.ordem import criar_ordem, enviar_ordem
+from mtcli_trade.models.ordem_model import criar_ordem, enviar_ordem
 from unittest.mock import MagicMock
 
 

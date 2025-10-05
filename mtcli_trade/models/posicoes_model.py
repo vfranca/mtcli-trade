@@ -7,7 +7,7 @@ from mtcli.logger import setup_logger
 log = setup_logger()
 
 
-def existem_posicoes(symbol = None) -> bool:
+def existem_posicoes(symbol=None) -> bool:
     """Verifica se existem posiçõs abertas."""
     conectar()
 
@@ -15,9 +15,7 @@ def existem_posicoes(symbol = None) -> bool:
 
     if not posicoes:
         log.info(
-            f"Nenhuma posição para {symbol}"
-            if symbol
-            else "Nenhuma posição encontrada"
+            f"Nenhuma posição para {symbol}" if symbol else "Nenhuma posição encontrada"
         )
         shutdown()
         return False
@@ -25,7 +23,7 @@ def existem_posicoes(symbol = None) -> bool:
         return True
 
 
-def encerra_posicoes(symbol = None):
+def encerra_posicoes(symbol=None):
     """Encerra todas as posições abertas (ou de um símbolo)"""
     conectar()
 
@@ -59,7 +57,9 @@ def encerra_posicoes(symbol = None):
         if resultado.retcode == mt5.TRADE_RETCODE_DONE:
             log.info(f"Posição {p.ticket} ({p.symbol}) encerrada.")
         else:
-                log.error(f"Falha ao encerrar {p.symbol} (ticket {p.ticket}): {resultado.retcode}")
+            log.error(
+                f"Falha ao encerrar {p.symbol} (ticket {p.ticket}): {resultado.retcode}"
+            )
         resultados.append(resultado)
 
     shutdown()

@@ -5,6 +5,7 @@ from mtcli_trade.conf import DIGITOS
 
 log = setup_logger()
 
+
 def buscar_ordens(symbol=None):
     conectar()
     try:
@@ -12,11 +13,12 @@ def buscar_ordens(symbol=None):
     finally:
         shutdown()
 
+
 def formatar_ordem(ordem):
     tipo = (
-        "COMPRA" if ordem.type == mt5.ORDER_TYPE_BUY_LIMIT
-        else "VENDA" if ordem.type == mt5.ORDER_TYPE_SELL_LIMIT
-        else str(ordem.type)
+        "COMPRA"
+        if ordem.type == mt5.ORDER_TYPE_BUY_LIMIT
+        else "VENDA" if ordem.type == mt5.ORDER_TYPE_SELL_LIMIT else str(ordem.type)
     )
     return {
         "tipo": tipo,
@@ -25,5 +27,3 @@ def formatar_ordem(ordem):
         "preco": round(ordem.price_open, DIGITOS),
         "ticket": ordem.ticket,
     }
-
-

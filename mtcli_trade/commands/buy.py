@@ -4,8 +4,8 @@ import click
 import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
-from mtcli_trade.models.ordem import criar_ordem, enviar_ordem, inicializar
-from mtcli_trade.models.risco import controlar_risco
+from mtcli_trade.models.ordem_model import criar_ordem, enviar_ordem, inicializar
+from mtcli_trade.models.risco_model import controlar_risco
 from mtcli_trade.conf import (
     SYMBOL,
     LOT,
@@ -19,6 +19,7 @@ log = setup_logger()
 
 
 @click.command()
+@click.version_option(package_name="mtcli-trade")
 @click.option(
     "--symbol", "-s", default=SYMBOL, help="Símbolo do ativo (default WINV25)."
 )

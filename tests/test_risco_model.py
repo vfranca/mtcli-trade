@@ -1,14 +1,14 @@
 import pytest
 from datetime import date
 from unittest.mock import patch
-from mtcli_trade.models.risco import controlar_risco
+from mtcli_trade.models.risco_model import controlar_risco
 
 
-@patch("mtcli_trade.models.risco.carregar_estado")
-@patch("mtcli_trade.models.risco.salvar_estado")
-@patch("mtcli_trade.models.risco.risco_excedido", return_value=True)
-@patch("mtcli_trade.models.risco.encerrar_todas_posicoes")
-@patch("mtcli_trade.models.risco.cancelar_todas_ordens")
+@patch("mtcli_trade.models.risco_model.carregar_estado")
+@patch("mtcli_trade.models.risco_model.salvar_estado")
+@patch("mtcli_trade.models.risco_model.risco_excedido", return_value=True)
+@patch("mtcli_trade.models.risco_model.encerrar_todas_posicoes")
+@patch("mtcli_trade.models.risco_model.cancelar_todas_ordens")
 def test_controlar_risco_limite_excedido(
     mock_cancelar,
     mock_encerrar,
@@ -29,8 +29,8 @@ def test_controlar_risco_limite_excedido(
     assert any("limite diário" in m.lower() for m in caplog.messages)
 
 
-@patch("mtcli_trade.models.risco.carregar_estado")
-@patch("mtcli_trade.models.risco.salvar_estado")
+@patch("mtcli_trade.models.risco_model.carregar_estado")
+@patch("mtcli_trade.models.risco_model.salvar_estado")
 def test_controlar_risco_ja_bloqueado(mock_salvar_estado, mock_carregar_estado, caplog):
     mock_carregar_estado.return_value = {
         "data": date.today().isoformat(),
@@ -45,9 +45,9 @@ def test_controlar_risco_ja_bloqueado(mock_salvar_estado, mock_carregar_estado, 
     assert any("bloqueado hoje por risco" in m.lower() for m in caplog.messages)
 
 
-@patch("mtcli_trade.models.risco.carregar_estado")
-@patch("mtcli_trade.models.risco.salvar_estado")
-@patch("mtcli_trade.models.risco.risco_excedido", return_value=False)
+@patch("mtcli_trade.models.risco_model.carregar_estado")
+@patch("mtcli_trade.models.risco_model.salvar_estado")
+@patch("mtcli_trade.models.risco_model.risco_excedido", return_value=False)
 def test_controlar_risco_dentro_do_limite(
     mock_risco_excedido,
     mock_salvar_estado,
