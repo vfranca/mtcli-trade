@@ -8,7 +8,10 @@ from mtcli.logger import setup_logger
 log = setup_logger()
 
 
-@click.command()
+@click.command(
+    "cancel",
+    help="Cancela todas as ordens pendentes ou apenas de um ativo se especificado.",
+)
 @click.version_option(package_name="mtcli-trade")
 @click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
 def cancel(symbol):

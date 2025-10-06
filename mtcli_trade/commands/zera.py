@@ -9,7 +9,9 @@ from mtcli_trade.models.posicoes_model import existem_posicoes, encerra_posicoes
 log = setup_logger()
 
 
-@click.command("zera")
+@click.command(
+    "zera", help="Encerra todas as posições abertas (ou de um ativo específico)."
+)
 @click.version_option(package_name="mtcli-trade")
 @click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
 def zera(symbol):

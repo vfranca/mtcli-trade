@@ -10,7 +10,10 @@ from mtcli_trade.conf import DIGITOS
 log = setup_logger()
 
 
-@click.command("pos")
+@click.command(
+    "positions",
+    help="Lista as posições abertas, lucro/prejuízo atual e detalhes por símbolo.",
+)
 @click.version_option(package_name="mtcli-trade")
 @click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
 def positions(symbol):

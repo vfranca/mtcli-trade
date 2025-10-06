@@ -18,7 +18,9 @@ from mtcli_trade.conf import (
 log = setup_logger()
 
 
-@click.command()
+@click.command(
+    "buy", help="Envia ordem de compra a mercado ou pendente, com SL e TP opcionais."
+)
 @click.version_option(package_name="mtcli-trade")
 @click.option(
     "--symbol", "-s", default=SYMBOL, help="Símbolo do ativo (default WINV25)."
