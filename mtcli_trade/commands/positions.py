@@ -12,7 +12,7 @@ log = setup_logger()
 
 @click.command(
     "positions",
-    help="Lista as posições abertas, lucro/prejuízo atual e detalhes por símbolo.",
+    help="Lista as posições abertas, lucro/prejuízo atual e detalhes por ativo.",
 )
 @click.version_option(package_name="mtcli-trade")
 @click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")

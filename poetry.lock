@@ -509,14 +509,14 @@ pyyaml = ">=5.1"
 
 [[package]]
 name = "mtcli"
-version = "2.6.0"
+version = "2.6.1"
 description = "Aplicativo CLI para exibir gráficos do MetaTrader 5 em texto acessível ao leitor de telas"
 optional = false
 python-versions = "<3.14.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "mtcli-2.6.0-py3-none-any.whl", hash = "sha256:95d19bc7acf6a4193a0339eefd9109e7ea3485a3b853305ff2484c29c4c59fc1"},
-    {file = "mtcli-2.6.0.tar.gz", hash = "sha256:e7972a75584f20298449ab22fa15ede76928dbf214fba0c1876e68fd96efec3a"},
+    {file = "mtcli-2.6.1-py3-none-any.whl", hash = "sha256:5a5aebe7d0c46665f6d58811e0ea31f87b87a4e41c0635c112203b68a6998114"},
+    {file = "mtcli-2.6.1.tar.gz", hash = "sha256:731bc2e97b056efcc50f1972e6f17186817ace96a62fa900e11e181ee3b557b5"},
 ]
 
 [package.dependencies]
@@ -525,14 +525,14 @@ metatrader5 = ">=5.0.5260,<6.0.0"
 
 [[package]]
 name = "mtcli-risco"
-version = "2.2.0"
+version = "2.2.2"
 description = "Plugin mtcli para controle de loss diário"
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["main"]
 files = [
-    {file = "mtcli_risco-2.2.0-py3-none-any.whl", hash = "sha256:af05e19254e6fbc369b6173ca239d0c352b1535a98570d0ae5a74a55e672d7e7"},
-    {file = "mtcli_risco-2.2.0.tar.gz", hash = "sha256:0aea2980e9125020f2e3d73d74fdbe70f510cd17720e1347b6220e2bf430720c"},
+    {file = "mtcli_risco-2.2.2-py3-none-any.whl", hash = "sha256:4feb35e42dc77a79763dcde1e4e806003c02de8dcd231066c99a21f0f2ef229f"},
+    {file = "mtcli_risco-2.2.2.tar.gz", hash = "sha256:85405d080f84504494188942e4fc907321d01d9b2367383414b73c21b05a1551"},
 ]
 
 [package.dependencies]
