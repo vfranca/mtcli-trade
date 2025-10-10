@@ -4,9 +4,7 @@ from mtcli_trade.commands.orders import orders
 from mtcli_trade.commands.positions import positions
 from mtcli_trade.commands.cancel import cancel
 from mtcli_trade.commands.zera import zera
-
-# from mtcli_trade.commands.trade import trade
-# from mtcli_trade.commands.trade import trade
+from mtcli_trade.commands.posicao import posicao
 
 
 def register(cli):
@@ -16,4 +14,4 @@ def register(cli):
     cli.add_command(positions)
     cli.add_command(cancel)
     cli.add_command(zera)
-    # cli.add_command(trade)
+    cli.add_command(posicao)
