@@ -1,9 +1,9 @@
 import pytest
 from click.testing import CliRunner
-from mtcli_trade.commands.buy import buy
+from mtcli_trade.commands.compra import compra
 
 
 def test_cli_compra_market(mock_mt5):
     runner = CliRunner()
-    result = runner.invoke(buy, ["--symbol", "WINV25", "--lot", "1"])
+    result = runner.invoke(compra, ["--symbol", "WINV25", "--lot", "1"])
     assert result.exit_code == 0

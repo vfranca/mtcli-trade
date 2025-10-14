@@ -1,4 +1,4 @@
-from mtcli_trade.views.orders_view import exibir_ordens
+from mtcli_trade.views.ordens_view import exibir_ordens
 from click.testing import CliRunner
 
 

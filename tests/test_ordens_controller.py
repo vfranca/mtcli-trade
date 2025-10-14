@@ -1,9 +1,9 @@
 from unittest.mock import patch, MagicMock
-from mtcli_trade.controllers.orders_controller import obter_ordens_pendentes
+from mtcli_trade.controllers.ordens_controller import obter_ordens_pendentes
 
 
-@patch("mtcli_trade.controllers.orders_controller.formatar_ordem")
-@patch("mtcli_trade.controllers.orders_controller.buscar_ordens")
+@patch("mtcli_trade.controllers.ordens_controller.formatar_ordem")
+@patch("mtcli_trade.controllers.ordens_controller.buscar_ordens")
 def test_obter_ordens_pendentes_com_resultado(mock_buscar, mock_formatar):
     mock_ordem = MagicMock()
     mock_buscar.return_value = [mock_ordem]
@@ -21,7 +21,7 @@ def test_obter_ordens_pendentes_com_resultado(mock_buscar, mock_formatar):
     assert resultado[0]["tipo"] == "COMPRA"
 
 
-@patch("mtcli_trade.controllers.orders_controller.buscar_ordens")
+@patch("mtcli_trade.controllers.ordens_controller.buscar_ordens")
 def test_obter_ordens_pendentes_vazio(mock_buscar):
     mock_buscar.return_value = []
     resultado = obter_ordens_pendentes()
