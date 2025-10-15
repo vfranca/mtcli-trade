@@ -22,7 +22,7 @@ from mtcli_trade.views.posicoes_view import (
     default=False,
     help="Encerra todas as posições ou de um ativo específico.",
 )
-def posicoes(symbol, zerar):
+def posicoes_cmd(symbol, zerar):
     """Lista ou zera todas as posições abertas (ou de um ativo)."""
     posicoes = obter_posicoes(symbol)
 
@@ -35,4 +35,4 @@ def posicoes(symbol, zerar):
 
 
 if __name__ == "__main__":
-    posicoes()
+    posicoes_cmd()

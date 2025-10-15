@@ -1,22 +1,17 @@
 from typing import Optional, Sequence
-from mtcli_trade.models.ordens_model import (
-    buscar_ordens,
-    formatar_ordem,
-    cancelar_ordens,
-)
 from mtcli.logger import setup_logger
+from mtcli_trade.models.ordens_model import buscar_ordens, formatar_ordem, cancelar_ordens
 
 log = setup_logger()
 
 
-def obter_ordens_pendentes(symbol=None):
+def obter_ordens_pendentes(symbol: Optional[str] = None) -> Sequence:
+    """Retorna lista de ordens pendentes formatadas (pode ser vazia)."""
     ordens_raw = buscar_ordens(symbol)
 
     if not ordens_raw:
         log.info(
-            f"Nenhuma ordem pendente para {symbol}."
-            if symbol
-            else "Nenhuma ordem pendente encontrada"
+            f"Nenhuma ordem pendente para {symbol}." if symbol else "Nenhuma ordem pendente encontrada"
         )
         return []
 
@@ -31,10 +26,10 @@ def obter_ordens_pendentes(symbol=None):
 
 
 def cancelar_ordens_pendentes(symbol: Optional[str] = None):
-    """Cancelar órdens pendentes (retorna a lista de resultados produzida pelo model)."""
+    """Cancela ordens pendentes via model e retorna resultados."""
     try:
         resultados = cancelar_ordens(symbol)
     except Exception as e:
-        log.error(f"Erro ao cancelar órdens: {e}")
+        log.error(f"Erro ao cancelar ordens: {e}")
         raise
     return resultados
