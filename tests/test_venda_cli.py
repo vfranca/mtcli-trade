@@ -1,16 +1,11 @@
 import pytest
 import time
-from click.testing import CliRunner
 from unittest.mock import patch
 from mtcli_trade.commands.venda_cli import venda_cmd
 
-@pytest.fixture
-def runner():
-    return CliRunner()
-
 def test_cli_venda_sucesso(runner):
     """Simula venda a mercado bem-sucedida."""
-    with patch("mtcli_trade.controllers.venda_controller.executar_venda") as mock_exec:
+    with patch("mtcli_trade.commands.venda_cli.executar_venda") as mock_exec:
         mock_exec.return_value = {"status": "ok", "resultado": {"retcode": 10009}}
         start = time.perf_counter()
         result = runner.invoke(venda_cmd, ["--symbol", "WINV25", "--lot", "1.0"])
@@ -22,7 +17,7 @@ def test_cli_venda_sucesso(runner):
 
 def test_cli_venda_bloqueada(runner):
     """Simula bloqueio por risco diário."""
-    with patch("mtcli_trade.controllers.venda_controller.executar_venda") as mock_exec:
+    with patch("mtcli_trade.commands.venda_cli.executar_venda") as mock_exec:
         mock_exec.return_value = {"status": "bloqueado"}
         start = time.perf_counter()
         result = runner.invoke(venda_cmd, ["--symbol", "WINV25"])
@@ -32,7 +27,7 @@ def test_cli_venda_bloqueada(runner):
 
 def test_cli_venda_erro_preco_limit(runner):
     """Simula erro ao tentar enviar ordem limit sem preço."""
-    with patch("mtcli_trade.controllers.venda_controller.executar_venda") as mock_exec:
+    with patch("mtcli_trade.commands.venda_cli.executar_venda") as mock_exec:
         mock_exec.return_value = {"status": "erro", "mensagem": "Preço obrigatório"}
         start = time.perf_counter()
         result = runner.invoke(venda_cmd, ["--symbol", "WINV25", "--limit"])
@@ -42,7 +37,7 @@ def test_cli_venda_erro_preco_limit(runner):
 
 def test_cli_venda_falha_preparacao(runner):
     """Simula falha genérica ao preparar ordem."""
-    with patch("mtcli_trade.controllers.venda_controller.executar_venda") as mock_exec:
+    with patch("mtcli_trade.commands.venda_cli.executar_venda") as mock_exec:
         mock_exec.return_value = {"status": "falha"}
         start = time.perf_counter()
         result = runner.invoke(venda_cmd, ["--symbol", "WINV25"])
@@ -52,7 +47,7 @@ def test_cli_venda_falha_preparacao(runner):
 
 def test_cli_venda_desconhecido(runner):
     """Simula retorno inesperado do controller."""
-    with patch("mtcli_trade.controllers.venda_controller.executar_venda") as mock_exec:
+    with patch("mtcli_trade.commands.venda_cli.executar_venda") as mock_exec:
         mock_exec.return_value = {"status": "xyz"}
         start = time.perf_counter()
         result = runner.invoke(venda_cmd, ["--symbol", "WINV25"])
