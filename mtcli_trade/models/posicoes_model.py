@@ -90,9 +90,7 @@ def editar_posicao(ticket, sl=None, tp=None):
             log.info(f"Posição {ticket} editada com sucesso.")
             return True
         else:
-            log.error(
-                f"Falha ao editar posição {ticket}: retcode={resultado.retcode}"
-            )
+            log.error(f"Falha ao editar posição {ticket}: retcode={resultado.retcode}")
             return False
 
 

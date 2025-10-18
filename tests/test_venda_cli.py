@@ -3,6 +3,7 @@ import time
 from unittest.mock import patch
 from mtcli_trade.commands.venda_cli import venda_cmd
 
+
 def test_cli_venda_sucesso(runner):
     """Simula venda a mercado bem-sucedida."""
     with patch("mtcli_trade.commands.venda_cli.executar_venda") as mock_exec:
@@ -15,6 +16,7 @@ def test_cli_venda_sucesso(runner):
         assert duration < 0.5, f"Execução muito lenta: {duration:.3f}s"
         mock_exec.assert_called_once()
 
+
 def test_cli_venda_bloqueada(runner):
     """Simula bloqueio por risco diário."""
     with patch("mtcli_trade.commands.venda_cli.executar_venda") as mock_exec:
@@ -24,6 +26,7 @@ def test_cli_venda_bloqueada(runner):
         duration = time.perf_counter() - start
         assert "bloqueada" in result.output.lower()
         assert duration < 0.5
+
 
 def test_cli_venda_erro_preco_limit(runner):
     """Simula erro ao tentar enviar ordem limit sem preço."""
@@ -35,6 +38,7 @@ def test_cli_venda_erro_preco_limit(runner):
         assert "preço obrigatório" in result.output.lower()
         assert duration < 0.5
 
+
 def test_cli_venda_falha_preparacao(runner):
     """Simula falha genérica ao preparar ordem."""
     with patch("mtcli_trade.commands.venda_cli.executar_venda") as mock_exec:
@@ -44,6 +48,7 @@ def test_cli_venda_falha_preparacao(runner):
         duration = time.perf_counter() - start
         assert "falha" in result.output.lower()
         assert duration < 0.5
+
 
 def test_cli_venda_desconhecido(runner):
     """Simula retorno inesperado do controller."""

@@ -42,6 +42,7 @@ def mock_conexao(mocker):
 # TESTES DE BUSCA
 # ------------------------
 
+
 def test_buscar_posicoes(mock_mt5, mock_conexao):
     mock_mt5.positions_get.return_value = [MagicMock(symbol="WINV25")]
     resultado = buscar_posicoes()
@@ -52,6 +53,7 @@ def test_buscar_posicoes(mock_mt5, mock_conexao):
 # ------------------------
 # TESTES DE EDIÇÃO
 # ------------------------
+
 
 def test_editar_posicao_sucesso(mock_mt5, mock_conexao, caplog):
     mock_pos = MagicMock(ticket=1, sl=100, tp=200, symbol="WINV25", magic=1)
@@ -89,6 +91,7 @@ def test_editar_posicao_falha_envio(mock_mt5, mock_conexao, caplog):
 # ------------------------
 # TESTES DE ENCERRAMENTO
 # ------------------------
+
 
 def test_encerra_posicoes_sucesso(mock_mt5, mock_conexao, caplog):
     mock_pos = MagicMock(

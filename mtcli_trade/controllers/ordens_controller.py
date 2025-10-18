@@ -1,6 +1,10 @@
 from typing import Optional, Sequence
 from mtcli.logger import setup_logger
-from mtcli_trade.models.ordens_model import buscar_ordens, formatar_ordem, cancelar_ordens
+from mtcli_trade.models.ordens_model import (
+    buscar_ordens,
+    formatar_ordem,
+    cancelar_ordens,
+)
 
 log = setup_logger()
 
@@ -11,7 +15,9 @@ def obter_ordens_pendentes(symbol: Optional[str] = None) -> Sequence:
 
     if not ordens_raw:
         log.info(
-            f"Nenhuma ordem pendente para {symbol}." if symbol else "Nenhuma ordem pendente encontrada"
+            f"Nenhuma ordem pendente para {symbol}."
+            if symbol
+            else "Nenhuma ordem pendente encontrada"
         )
         return []
 

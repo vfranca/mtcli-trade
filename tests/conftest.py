@@ -27,15 +27,28 @@ def mock_mt5():
 @pytest.fixture
 def mock_compra_model(mocker):
     mocker.patch("mtcli_trade.models.compra_model.verificar_risco", return_value=False)
-    mocker.patch("mtcli_trade.models.compra_model.preparar_ordem_compra", return_value=(MagicMock(), False))
-    mocker.patch("mtcli_trade.models.compra_model.enviar_ordem_compra", return_value={"retcode": 10009})
+    mocker.patch(
+        "mtcli_trade.models.compra_model.preparar_ordem_compra",
+        return_value=(MagicMock(), False),
+    )
+    mocker.patch(
+        "mtcli_trade.models.compra_model.enviar_ordem_compra",
+        return_value={"retcode": 10009},
+    )
     return mocker
+
 
 @pytest.fixture
 def mock_venda_model(mocker):
     mocker.patch("mtcli_trade.models.venda_model.verificar_risco", return_value=False)
-    mocker.patch("mtcli_trade.models.venda_model.preparar_ordem_venda", return_value=(MagicMock(), False))
-    mocker.patch("mtcli_trade.models.venda_model.enviar_ordem_venda", return_value={"retcode": 10009})
+    mocker.patch(
+        "mtcli_trade.models.venda_model.preparar_ordem_venda",
+        return_value=(MagicMock(), False),
+    )
+    mocker.patch(
+        "mtcli_trade.models.venda_model.enviar_ordem_venda",
+        return_value={"retcode": 10009},
+    )
     return mocker
 
 

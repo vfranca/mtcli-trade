@@ -1,38 +1,62 @@
 import pytest
 from unittest.mock import patch, MagicMock
+
 # from click.testing import CliRunner
 from mtcli_trade.controllers.venda_controller import executar_venda
 from mtcli_trade.views.venda_view import exibir_resultado_venda
+
 
 def test_executar_venda_sucesso(mock_venda_model):
     resultado = executar_venda("WINV25", 1.0, 150, 300, False, None)
     assert resultado["status"] == "ok"
     assert "resultado" in resultado
 
+
 def test_executar_venda_bloqueada(mocker):
-    mocker.patch("mtcli_trade.controllers.venda_controller.verificar_risco", return_value=True)
+    mocker.patch(
+        "mtcli_trade.controllers.venda_controller.verificar_risco", return_value=True
+    )
     resultado = executar_venda("WINV25", 1.0, 150, 300, False, None)
     assert resultado["status"] == "bloqueado"
 
+
 def test_executar_venda_falha_preparacao(mocker):
-    mocker.patch("mtcli_trade.controllers.venda_controller.verificar_risco", return_value=False)
-    mocker.patch("mtcli_trade.controllers.venda_controller.preparar_ordem_venda", return_value=(None, False))
+    mocker.patch(
+        "mtcli_trade.controllers.venda_controller.verificar_risco", return_value=False
+    )
+    mocker.patch(
+        "mtcli_trade.controllers.venda_controller.preparar_ordem_venda",
+        return_value=(None, False),
+    )
     resultado = executar_venda("WINV25", 1.0, 150, 300, False, None)
     assert resultado["status"] == "falha"
 
+
 def test_executar_venda_valor_invalido(mocker):
-    mocker.patch("mtcli_trade.controllers.venda_controller.verificar_risco", return_value=False)
-    mocker.patch("mtcli_trade.controllers.venda_controller.preparar_ordem_venda", side_effect=ValueError("Preço obrigatório"))
+    mocker.patch(
+        "mtcli_trade.controllers.venda_controller.verificar_risco", return_value=False
+    )
+    mocker.patch(
+        "mtcli_trade.controllers.venda_controller.preparar_ordem_venda",
+        side_effect=ValueError("Preço obrigatório"),
+    )
     resultado = executar_venda("WINV25", 1.0, 150, 300, True, None)
     assert resultado["status"] == "erro"
     assert "Preço obrigatório" in resultado["mensagem"]
 
+
 def test_executar_venda_excecao_inesperada(mocker):
-    mocker.patch("mtcli_trade.controllers.venda_controller.verificar_risco", return_value=False)
-    mocker.patch("mtcli_trade.controllers.venda_controller.preparar_ordem_venda", side_effect=RuntimeError("Erro MT5"))
+    mocker.patch(
+        "mtcli_trade.controllers.venda_controller.verificar_risco", return_value=False
+    )
+    mocker.patch(
+        "mtcli_trade.controllers.venda_controller.preparar_ordem_venda",
+        side_effect=RuntimeError("Erro MT5"),
+    )
     resultado = executar_venda("WINV25", 1.0, 150, 300, False, None)
     assert resultado["status"] == "erro"
     assert "Erro MT5" in resultado["mensagem"]
+
 
 @pytest.mark.parametrize(
     "resultado, esperado",

@@ -6,11 +6,15 @@ from mtcli.logger import setup_logger
 
 log = setup_logger()
 
+
 def verificar_risco() -> bool:
     """Retorna True se o risco bloquear a operação."""
     return controlar_risco(STATUS_FILE, LOSS_LIMIT)
 
-def preparar_ordem_venda(symbol: str, lot: float, sl: float, tp: float, limit: bool, preco: float = None):
+
+def preparar_ordem_venda(
+    symbol: str, lot: float, sl: float, tp: float, limit: bool, preco: float = None
+):
     """Prepara a ordem de venda a mercado ou pendente."""
     tick = inicializar(symbol)
     if not tick:
@@ -28,6 +32,7 @@ def preparar_ordem_venda(symbol: str, lot: float, sl: float, tp: float, limit: b
 
     ordem = criar_ordem(symbol, lot, sl, tp, price, order_type, limit)
     return ordem, limit
+
 
 def enviar_ordem_venda(ordem, limit: bool):
     """Envia a ordem de venda via MetaTrader5."""

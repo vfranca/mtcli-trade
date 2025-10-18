@@ -1,10 +1,17 @@
 from mtcli.conecta import conectar, shutdown
-from mtcli_trade.models.venda_model import verificar_risco, preparar_ordem_venda, enviar_ordem_venda
+from mtcli_trade.models.venda_model import (
+    verificar_risco,
+    preparar_ordem_venda,
+    enviar_ordem_venda,
+)
 from mtcli.logger import setup_logger
 
 log = setup_logger()
 
-def executar_venda(symbol: str, lot: float, sl: float, tp: float, limit: bool, preco: float = None):
+
+def executar_venda(
+    symbol: str, lot: float, sl: float, tp: float, limit: bool, preco: float = None
+):
     """Controla o fluxo completo da venda."""
     conectar()
 

@@ -1,5 +1,6 @@
 import click
 
+
 def exibir_resultado_venda(resultado: dict):
     """Mostra o resultado da venda no terminal."""
     status = resultado.get("status")

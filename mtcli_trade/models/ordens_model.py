@@ -36,7 +36,9 @@ def cancelar_ordens(symbol: Optional[str] = None) -> List[Any]:
 
         if not ordens:
             log.info(
-                f"Nenhuma ordem pendente para {symbol}" if symbol else "Nenhuma ordem pendente encontrada."
+                f"Nenhuma ordem pendente para {symbol}"
+                if symbol
+                else "Nenhuma ordem pendente encontrada."
             )
             return resultados
 
@@ -50,10 +52,15 @@ def cancelar_ordens(symbol: Optional[str] = None) -> List[Any]:
             }
 
             resultado = mt5.order_send(req)
-            if resultado and getattr(resultado, "retcode", None) == mt5.TRADE_RETCODE_DONE:
+            if (
+                resultado
+                and getattr(resultado, "retcode", None) == mt5.TRADE_RETCODE_DONE
+            ):
                 log.info(f"Ordem cancelada: ticket {ordem.ticket} ({ordem.symbol})")
             else:
-                log.error(f"Falha ao cancelar {ordem.ticket} código {getattr(resultado, 'retcode', 'N/A')}")
+                log.error(
+                    f"Falha ao cancelar {ordem.ticket} código {getattr(resultado, 'retcode', 'N/A')}"
+                )
             resultados.append(resultado)
 
     return resultados

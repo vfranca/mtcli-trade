@@ -5,6 +5,7 @@ from mtcli_trade.controllers.compra_controller import executar_compra
 from mtcli_trade.views.compra_view import exibir_resultado_compra
 from mtcli_trade.commands.compra_cli import compra_cmd
 
+
 # ==== INTEGRATION TESTS - CLI + PERFORMANCE ====
 def test_cli_compra_sucesso(runner):
     with patch("mtcli_trade.commands.compra_cli.executar_compra") as mock_exec:
@@ -16,6 +17,7 @@ def test_cli_compra_sucesso(runner):
         assert "sucesso" in result.output.lower()
         assert duration < 0.5
 
+
 def test_cli_compra_bloqueada(runner):
     with patch("mtcli_trade.commands.compra_cli.executar_compra") as mock_exec:
         mock_exec.return_value = {"status": "bloqueado"}
@@ -24,6 +26,7 @@ def test_cli_compra_bloqueada(runner):
         duration = time.perf_counter() - start
         assert "bloqueada" in result.output.lower()
         assert duration < 0.5
+
 
 def test_cli_compra_erro_preco_limit(runner):
     with patch("mtcli_trade.commands.compra_cli.executar_compra") as mock_exec:
@@ -34,6 +37,7 @@ def test_cli_compra_erro_preco_limit(runner):
         assert "preço obrigatório" in result.output.lower()
         assert duration < 0.5
 
+
 def test_cli_compra_falha_preparacao(runner):
     with patch("mtcli_trade.commands.compra_cli.executar_compra") as mock_exec:
         mock_exec.return_value = {"status": "falha"}
@@ -42,6 +46,7 @@ def test_cli_compra_falha_preparacao(runner):
         duration = time.perf_counter() - start
         assert "falha" in result.output.lower()
         assert duration < 0.5
+
 
 def test_cli_compra_desconhecido(runner):
     with patch("mtcli_trade.commands.compra_cli.executar_compra") as mock_exec:

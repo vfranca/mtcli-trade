@@ -25,7 +25,9 @@ def test_controlar_risco_limite_excedido(
     assert bloqueado is True
     mock_encerrar.assert_called_once()
     mock_cancelar.assert_called_once()
-    mock_salvar_estado.assert_called_once()
+    assert mock_salvar_estado.call_count == 2
+    mock_salvar_estado.assert_any_call("estado.json", ANY, False)
+    mock_salvar_estado.assert_any_call("estado.json", ANY, True)
     assert any("limite diário" in m.lower() for m in caplog.messages)
 
 

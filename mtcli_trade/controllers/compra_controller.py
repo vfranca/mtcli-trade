@@ -1,10 +1,17 @@
 from mtcli.conecta import conectar, shutdown
-from mtcli_trade.models.compra_model import verificar_risco, preparar_ordem_compra, enviar_ordem_compra
+from mtcli_trade.models.compra_model import (
+    verificar_risco,
+    preparar_ordem_compra,
+    enviar_ordem_compra,
+)
 from mtcli.logger import setup_logger
 
 log = setup_logger()
 
-def executar_compra(symbol: str, lot: float, sl: float, tp: float, limit: bool, preco: float = None):
+
+def executar_compra(
+    symbol: str, lot: float, sl: float, tp: float, limit: bool, preco: float = None
+):
     """Controla o fluxo completo da compra."""
     conectar()
 
