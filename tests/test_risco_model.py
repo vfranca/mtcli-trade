@@ -1,6 +1,6 @@
 import pytest
 from datetime import date
-from unittest.mock import patch
+from unittest.mock import patch, ANY
 from mtcli_trade.models.risco_model import controlar_risco
 
 
