@@ -17,15 +17,15 @@ def inicializar(symbol: str):
     """
     with mt5_conexao():
         if not mt5.symbol_select(symbol, True):
-            log.error(f"Erro ao selecionar simbolo {symbol}")
+            log.error(f"Erro ao selecionar símbolo {symbol}")
             return None
 
         tick = mt5.symbol_info_tick(symbol)
         if not tick:
-            log.error(f"Erro ao obter cotacao de {symbol}")
+            log.error(f"Erro ao obter cotação de {symbol}")
             return None
 
-        log.debug(f"Simbolo {symbol} inicializado com sucesso.")
+        log.debug(f"Símbolo {symbol} inicializado com sucesso.")
         return tick
 
 
@@ -39,15 +39,17 @@ def criar_ordem(
     limit: bool,
 ) -> dict:
     """
-    Cria e retorna um dicionario com os parametros de uma ordem MT5.
-    Suporta ordens a mercado e ordens limitadas.
+    Cria e retorna um dicionário com os parâmetros de uma ordem MT5.
+    Suporta ordens a mercado e ordens pendentes (limit).
     """
     try:
         info = mt5.symbol_info(symbol)
         point = getattr(info, "point", 0.01)
     except Exception:
         point = 0.01
-        log.warning(f"Simbolo {symbol} sem informacoes completas; usando point padrao 0.01.")
+        log.warning(
+            f"Símbolo {symbol} sem informações completas; usando point padrão 0.01."
+        )
 
     sl_price = (
         price - sl * point
@@ -79,29 +81,23 @@ def criar_ordem(
     return ordem
 
 
-def enviar_ordem(ordem: dict, limit: bool):
-    """
-    Envia uma ordem para o MetaTrader 5 e retorna o resultado do envio.
-    Faz log detalhado do sucesso ou falha.
-    """
-    log.info(f"Enviando ordem: {ordem}")
-
+def enviar_ordem(ordem, limit: bool):
+    """Envia a ordem e retorna resultado formatado, mesmo em falha."""
     resultado = mt5.order_send(ordem)
-    log.debug(f"Resultado do envio da ordem: {resultado}")
 
-    if not resultado:
-        log.error("Nenhum resultado retornado ao enviar ordem.")
-        return None
+    if resultado is None:
+        return {
+            "retcode": None,
+            "comment": "Erro: ordem não enviada. Possível mercado fechado."
+        }
 
-    retcode = getattr(resultado, "retcode", None)
-    order_id = getattr(resultado, "order", "N/A")
-    comment = getattr(resultado, "comment", "")
-
-    if retcode in (mt5.TRADE_RETCODE_DONE, mt5.TRADE_RETCODE_PLACED):
-        tipo_ordem = "limitada" if limit else "a mercado"
-        log.info(f"Ordem {tipo_ordem} enviada com sucesso (ticket {order_id}).")
-    else:
-        log.error(f"Falha ao enviar ordem (retcode={retcode}, comentario={comment}).")
-
-    return resultado
+    return {
+        "retcode": resultado.retcode,
+        "comment": getattr(resultado, "comment", ""),
+        "order": getattr(resultado, "order", None),
+        "symbol": ordem["symbol"],
+        "type": "LIMIT" if limit else "MARKET",
+        "volume": ordem["volume"],
+        "price": ordem["price"],
+    }
 

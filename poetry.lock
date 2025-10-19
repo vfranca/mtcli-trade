@@ -271,14 +271,14 @@ dev = ["flake8", "markdown", "twine", "wheel"]
 
 [[package]]
 name = "iniconfig"
-version = "2.1.0"
+version = "2.3.0"
 description = "brain-dead simple config-ini parsing"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "iniconfig-2.1.0-py3-none-any.whl", hash = "sha256:9deba5723312380e77435581c6bf4935c94cbfab9b1ed33ef8d238ea168eb760"},
-    {file = "iniconfig-2.1.0.tar.gz", hash = "sha256:3abbd2e30b36733fee78f9c7f7308f2d0050e88f0087fd25c2645f63c773e1c7"},
+    {file = "iniconfig-2.3.0-py3-none-any.whl", hash = "sha256:f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12"},
+    {file = "iniconfig-2.3.0.tar.gz", hash = "sha256:c76315c77db068650d49c5b56314774a7804df16fee4402c1f19d6d15d8c4730"},
 ]
 
 [[package]]
@@ -428,20 +428,20 @@ files = [
 
 [[package]]
 name = "metatrader5"
-version = "5.0.5328"
+version = "5.0.5370"
 description = "API Connector to MetaTrader 5 Terminal"
 optional = false
 python-versions = "<4,>3.5"
 groups = ["main"]
 files = [
-    {file = "MetaTrader5-5.0.5328-cp310-cp310-win_amd64.whl", hash = "sha256:f7e80a284b1c80428246d5c993bed2d21f05190810a01e50fe308bb793ff4558"},
-    {file = "MetaTrader5-5.0.5328-cp311-cp311-win_amd64.whl", hash = "sha256:4abaacf91b23b6628a15d4765010367c7f099293b1277976367a0a9533c573e5"},
-    {file = "MetaTrader5-5.0.5328-cp312-cp312-win_amd64.whl", hash = "sha256:89c29a31c9dd3ecbdb1a170958d705b88103734303fcbc9893c3e9644a84c461"},
-    {file = "MetaTrader5-5.0.5328-cp313-cp313-win_amd64.whl", hash = "sha256:37e9b5dd274faa743fea644a4eb2f299b87d143ef608fd67ef7477bc534a6fec"},
-    {file = "MetaTrader5-5.0.5328-cp36-cp36m-win_amd64.whl", hash = "sha256:429630df426eba7ae06e5611f2a32150427efc207907624a013e6eb88e03bded"},
-    {file = "MetaTrader5-5.0.5328-cp37-cp37m-win_amd64.whl", hash = "sha256:63910eb4d6de72fb4656e40f1862c028dc91681707025f3c7db6c411318b1f26"},
-    {file = "MetaTrader5-5.0.5328-cp38-cp38-win_amd64.whl", hash = "sha256:3bdad89b9ed329807986f4db2475e15995addd7d709016425c5b4e5448d1b837"},
-    {file = "MetaTrader5-5.0.5328-cp39-cp39-win_amd64.whl", hash = "sha256:9b78c03b0089c418928c9294749adf350e626e67dbbbaeac66c94add17b6f2ca"},
+    {file = "MetaTrader5-5.0.5370-cp310-cp310-win_amd64.whl", hash = "sha256:ab7778b7d941dc82a2a23bbdc6692e7ad6fb1ea73a108a066648725f5955b22e"},
+    {file = "MetaTrader5-5.0.5370-cp311-cp311-win_amd64.whl", hash = "sha256:217b7688dde03ee5d48cdae73557fc420f2b8f3488279d62e9dc37d590e44fbb"},
+    {file = "MetaTrader5-5.0.5370-cp312-cp312-win_amd64.whl", hash = "sha256:6ff5f8bb34de60baf2b3d8b00d7f907333f679ea37dc89b616a77f7bff695631"},
+    {file = "MetaTrader5-5.0.5370-cp313-cp313-win_amd64.whl", hash = "sha256:842492931fea9999c92de67c8dfb4e712f4b84bb0c23c1a2f1d8e998c186985d"},
+    {file = "MetaTrader5-5.0.5370-cp36-cp36m-win_amd64.whl", hash = "sha256:78ad480f14763793d139fcebfde34d647b49796b506c40ff53e3fd00dc94439e"},
+    {file = "MetaTrader5-5.0.5370-cp37-cp37m-win_amd64.whl", hash = "sha256:24f1fb33b9703613ac35d15fb1e368c206efe9146deec366350d8f568c000b46"},
+    {file = "MetaTrader5-5.0.5370-cp38-cp38-win_amd64.whl", hash = "sha256:5ee80b7200290e2272a01bad77a3e243c83bd594d4536aea574693b2a1c8d06f"},
+    {file = "MetaTrader5-5.0.5370-cp39-cp39-win_amd64.whl", hash = "sha256:c644ae30ce464f80bb0477be732c4e693401c0358fb15f6b10908dd2ac08bc66"},
 ]
 
 [package.dependencies]
@@ -497,14 +497,14 @@ pyyaml = ">=5.1"
 
 [[package]]
 name = "mtcli"
-version = "3.2.0.dev1"
+version = "3.2.0.dev2"
 description = "Aplicativo CLI para exibir gráficos do MetaTrader 5 em texto acessível ao leitor de telas"
 optional = false
 python-versions = "<3.14.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "mtcli-3.2.0.dev1-py3-none-any.whl", hash = "sha256:b09a7a2368c1f179b92d0bb2a2e8b36ba2e0ccca79c3a127c31da63a6b8f82d6"},
-    {file = "mtcli-3.2.0.dev1.tar.gz", hash = "sha256:e6ed923b22c00d23a222055a5ca5cb4a2c9c9c4ed06b909eb7e5acee2ad5bfe2"},
+    {file = "mtcli-3.2.0.dev2-py3-none-any.whl", hash = "sha256:fe77bc02bfa352cf0f86f723521255d380750c2c979dbb8e0b2586e698dae03c"},
+    {file = "mtcli-3.2.0.dev2.tar.gz", hash = "sha256:7e5841b803d48b234902d3da076854c292287ec0b567006366cf29399e1cf1e2"},
 ]
 
 [package.dependencies]
@@ -1068,4 +1068,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14.0"
-content-hash = "af61ed28478a8b2c3b28ba5badb75ad0365f78fa591393dcd25dc8fa2c53630e"
+content-hash = "511771eae573b4ec4ae554f5a6c6dd5b5bfde94c672196647612311425b47a66"

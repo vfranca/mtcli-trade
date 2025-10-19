@@ -33,6 +33,7 @@ def buscar_posicoes(symbol: str | None = None):
             log.error(f"Erro ao buscar posições: {e}")
             return []
 
+
 def encerra_posicoes():
     """Encerra todas as posições abertas."""
     resultados = []
