@@ -1,6 +1,6 @@
 import MetaTrader5 as mt5
-from mtcli_trade.logger import setup_logger
-from mtcli_trade.mt5_context import mt5_conexao
+from mtcli.logger import setup_logger
+from mtcli.mt5_context import mt5_conexao
 from mtcli_trade.conf import LOSS_LIMIT, STATUS_FILE
 from mtcli_trade.models.risco_model import controlar_risco
 from mtcli_trade.models.ordem_model import criar_ordem, enviar_ordem
@@ -8,11 +8,30 @@ from mtcli_trade.models.ordem_model import criar_ordem, enviar_ordem
 log = setup_logger()
 
 
-def buscar_posicoes():
-    """Retorna todas as posições abertas."""
+def buscar_posicoes(symbol: str | None = None):
+    """
+    Retorna as posições abertas.
+    - Se `symbol` for None, retorna todas as posições abertas.
+    - Se `symbol` for informado, retorna apenas as posições desse símbolo.
+    """
     with mt5_conexao():
-        return mt5.positions_get()
+        try:
+            if symbol:
+                posicoes = mt5.positions_get(symbol=symbol)
+                log.debug(f"Buscando posições para o símbolo: {symbol}")
+            else:
+                posicoes = mt5.positions_get()
+                log.debug("Buscando todas as posições abertas.")
 
+            if not posicoes:
+                log.info("Nenhuma posição encontrada.")
+                return []
+
+            return list(posicoes)
+
+        except Exception as e:
+            log.error(f"Erro ao buscar posições: {e}")
+            return []
 
 def encerra_posicoes():
     """Encerra todas as posições abertas."""

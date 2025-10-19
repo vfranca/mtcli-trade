@@ -1,7 +1,7 @@
 import MetaTrader5 as mt5
 from typing import Optional, List, Any
 from mtcli.logger import setup_logger
-from mtcli_trade.mt5_context import mt5_conexao
+from mtcli.mt5_context import mt5_conexao
 from mtcli_trade.conf import DIGITOS
 
 log = setup_logger()

@@ -1,31 +1,53 @@
-"""Modelo da execução da órdem."""
+"""
+Modelo de execução de ordens no MetaTrader 5 (camada Model do MVC).
+Responsável por criar, enviar e inicializar ordens de compra/venda.
+"""
 
-import click
 import MetaTrader5 as mt5
-from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
-
+from mtcli.mt5_context import mt5_conexao
 
 log = setup_logger()
 
 
-def inicializar(symbol):
-    conectar()
-    if not mt5.symbol_select(symbol, True):
-        click.echo(f"Erro ao selecionar símbolo {symbol}")
-        shutdown()
-        return None
-    tick = mt5.symbol_info_tick(symbol)
-    if not tick:
-        click.echo(f"Erro ao obter cotação de {symbol}")
-        shutdown()
-        return None
-    return tick
+def inicializar(symbol: str):
+    """
+    Inicializa o símbolo no MetaTrader 5 e retorna seu tick atual.
+    Retorna None se houver falha na seleção ou na obtenção do tick.
+    """
+    with mt5_conexao():
+        if not mt5.symbol_select(symbol, True):
+            log.error(f"Erro ao selecionar simbolo {symbol}")
+            return None
+
+        tick = mt5.symbol_info_tick(symbol)
+        if not tick:
+            log.error(f"Erro ao obter cotacao de {symbol}")
+            return None
+
+        log.debug(f"Simbolo {symbol} inicializado com sucesso.")
+        return tick
 
 
-def criar_ordem(symbol, lot, sl, tp, price, order_type, limit):
-    info = mt5.symbol_info(symbol)
-    point = info.point if info else 0.01  # fallback
+def criar_ordem(
+    symbol: str,
+    lot: float,
+    sl: float,
+    tp: float,
+    price: float,
+    order_type: int,
+    limit: bool,
+) -> dict:
+    """
+    Cria e retorna um dicionario com os parametros de uma ordem MT5.
+    Suporta ordens a mercado e ordens limitadas.
+    """
+    try:
+        info = mt5.symbol_info(symbol)
+        point = getattr(info, "point", 0.01)
+    except Exception:
+        point = 0.01
+        log.warning(f"Simbolo {symbol} sem informacoes completas; usando point padrao 0.01.")
 
     sl_price = (
         price - sl * point
@@ -38,7 +60,7 @@ def criar_ordem(symbol, lot, sl, tp, price, order_type, limit):
         else price - tp * point
     )
 
-    return {
+    ordem = {
         "action": mt5.TRADE_ACTION_PENDING if limit else mt5.TRADE_ACTION_DEAL,
         "symbol": symbol,
         "volume": lot,
@@ -53,17 +75,33 @@ def criar_ordem(symbol, lot, sl, tp, price, order_type, limit):
         "type_filling": mt5.ORDER_FILLING_IOC,
     }
 
+    log.debug(f"Ordem criada: {ordem}")
+    return ordem
 
-def enviar_ordem(ordem, limit):
+
+def enviar_ordem(ordem: dict, limit: bool):
+    """
+    Envia uma ordem para o MetaTrader 5 e retorna o resultado do envio.
+    Faz log detalhado do sucesso ou falha.
+    """
     log.info(f"Enviando ordem: {ordem}")
+
     resultado = mt5.order_send(ordem)
-    log.debug(f"Resultado do envio da órdem models.ordem.py: {ordem}")
-    if resultado.retcode in (mt5.TRADE_RETCODE_DONE, mt5.TRADE_RETCODE_PLACED):
-        msg = f"Ordem {'limitada' if limit else 'a mercado'} enviada com sucesso ticket {resultado.order}"
-        click.echo(msg)
-        log.info(msg)
+    log.debug(f"Resultado do envio da ordem: {resultado}")
+
+    if not resultado:
+        log.error("Nenhum resultado retornado ao enviar ordem.")
+        return None
+
+    retcode = getattr(resultado, "retcode", None)
+    order_id = getattr(resultado, "order", "N/A")
+    comment = getattr(resultado, "comment", "")
+
+    if retcode in (mt5.TRADE_RETCODE_DONE, mt5.TRADE_RETCODE_PLACED):
+        tipo_ordem = "limitada" if limit else "a mercado"
+        log.info(f"Ordem {tipo_ordem} enviada com sucesso (ticket {order_id}).")
     else:
-        msg = f"Falha ao enviar órdem {resultado.retcode} - {resultado.comment}"
-        click.echo(msg)
-        log.error(msg)
+        log.error(f"Falha ao enviar ordem (retcode={retcode}, comentario={comment}).")
+
     return resultado
+
