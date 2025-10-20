@@ -1,11 +1,11 @@
 import click
 from mtcli_trade.controllers.compra_controller import executar_compra
-from mtcli_trade.views.compra_view import exibir_resultado_compra
+from mtcli_trade.views.ordem_view import exibir_resultado_ordem
 from mtcli_trade.conf import SYMBOL, LOT, SL, TP
 
 
 @click.command(
-    "buy", help="Envia ordem de compra (market ou limit) com SL e TP opcionais."
+    "compra", help="Envia ordem de compra (market ou limit) com SL e TP opcionais."
 )
 @click.version_option(package_name="mtcli-trade")
 @click.option(
@@ -21,7 +21,7 @@ from mtcli_trade.conf import SYMBOL, LOT, SL, TP
 def compra_cmd(symbol, lot, sl, tp, limit, preco):
     """Executa o fluxo completo de compra."""
     resultado = executar_compra(symbol, lot, sl, tp, limit, preco)
-    exibir_resultado_compra(resultado)
+    exibir_resultado_ordem(resultado)
 
 
 if __name__ == "__main__":
