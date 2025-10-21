@@ -1,11 +1,12 @@
-from typing import Optional, Sequence
+from collections.abc import Sequence
+
 from mtcli.logger import setup_logger
 from mtcli_trade.models.posicoes_model import buscar_posicoes, encerra_posicoes
 
 log = setup_logger()
 
 
-def obter_posicoes(symbol: Optional[str] = None) -> Sequence:
+def obter_posicoes(symbol: str | None = None) -> Sequence:
     """Retorna uma sequência (possivelmente vazia) de posições abertas para o symbol ou todas."""
     try:
         posicoes = buscar_posicoes(symbol)
@@ -19,7 +20,7 @@ def obter_posicoes(symbol: Optional[str] = None) -> Sequence:
     return posicoes
 
 
-def encerrar_posicoes(symbol: Optional[str] = None):
+def encerrar_posicoes(symbol: str | None = None):
     """Encerrar posições (retorna a lista de resultados produzida pelo model)."""
     try:
         resultados = encerra_posicoes(symbol)

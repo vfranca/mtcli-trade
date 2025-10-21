@@ -1,15 +1,16 @@
-from typing import Optional, Sequence
+from collections.abc import Sequence
+
 from mtcli.logger import setup_logger
 from mtcli_trade.models.ordens_model import (
     buscar_ordens,
-    formatar_ordem,
     cancelar_ordens,
+    formatar_ordem,
 )
 
 log = setup_logger()
 
 
-def obter_ordens_pendentes(symbol: Optional[str] = None) -> Sequence:
+def obter_ordens_pendentes(symbol: str | None = None) -> Sequence:
     """Retorna lista de ordens pendentes formatadas (pode ser vazia)."""
     ordens_raw = buscar_ordens(symbol)
 
@@ -31,7 +32,7 @@ def obter_ordens_pendentes(symbol: Optional[str] = None) -> Sequence:
     return ordens
 
 
-def cancelar_ordens_pendentes(symbol: Optional[str] = None):
+def cancelar_ordens_pendentes(symbol: str | None = None):
     """Cancela ordens pendentes via model e retorna resultados."""
     try:
         resultados = cancelar_ordens(symbol)

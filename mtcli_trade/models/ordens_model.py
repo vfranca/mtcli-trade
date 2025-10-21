@@ -1,5 +1,7 @@
+from typing import Any
+
 import MetaTrader5 as mt5
-from typing import Optional, List, Any
+
 from mtcli.logger import setup_logger
 from mtcli.mt5_context import mt5_conexao
 from mtcli_trade.conf import DIGITOS
@@ -7,7 +9,7 @@ from mtcli_trade.conf import DIGITOS
 log = setup_logger()
 
 
-def buscar_ordens(symbol: Optional[str] = None):
+def buscar_ordens(symbol: str | None = None):
     """Recupera ordens pendentes do MetaTrader 5."""
     with mt5_conexao():
         return mt5.orders_get(symbol=symbol) if symbol else mt5.orders_get()
@@ -17,7 +19,9 @@ def formatar_ordem(ordem):
     tipo = (
         "COMPRA"
         if ordem.type == mt5.ORDER_TYPE_BUY_LIMIT
-        else "VENDA" if ordem.type == mt5.ORDER_TYPE_SELL_LIMIT else str(ordem.type)
+        else "VENDA"
+        if ordem.type == mt5.ORDER_TYPE_SELL_LIMIT
+        else str(ordem.type)
     )
     return {
         "tipo": tipo,
@@ -28,7 +32,7 @@ def formatar_ordem(ordem):
     }
 
 
-def cancelar_ordens(symbol: Optional[str] = None) -> List[Any]:
+def cancelar_ordens(symbol: str | None = None) -> list[Any]:
     """Cancela todas as ordens (ou as de um símbolo específico)."""
     resultados = []
     with mt5_conexao():

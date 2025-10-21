@@ -4,6 +4,7 @@ Responsável por criar, enviar e inicializar ordens de compra/venda.
 """
 
 import MetaTrader5 as mt5
+
 from mtcli.logger import setup_logger
 from mtcli.mt5_context import mt5_conexao
 
@@ -88,7 +89,7 @@ def enviar_ordem(ordem, limit: bool):
     if resultado is None:
         return {
             "retcode": None,
-            "comment": "Erro: ordem não enviada. Possível mercado fechado."
+            "comment": "Erro: ordem não enviada. Possível mercado fechado.",
         }
 
     return {
@@ -100,4 +101,3 @@ def enviar_ordem(ordem, limit: bool):
         "volume": ordem["volume"],
         "price": ordem["price"],
     }
-

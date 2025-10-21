@@ -1,6 +1,8 @@
-import pytest
 import logging
 from unittest.mock import MagicMock
+
+import pytest
+
 from mtcli_trade.controllers import compra_controller
 
 
@@ -11,13 +13,17 @@ def caplog_info(caplog):
 
 
 def test_executar_compra_bloqueada(mocker):
-    mocker.patch("mtcli_trade.controllers.compra_controller.verificar_risco", return_value=True)
+    mocker.patch(
+        "mtcli_trade.controllers.compra_controller.verificar_risco", return_value=True
+    )
     resultado = compra_controller.executar_compra("WINV25", 1, 100, 200, False)
     assert resultado["status"] == "bloqueado"
 
 
 def test_executar_compra_sucesso(mocker):
-    mocker.patch("mtcli_trade.controllers.compra_controller.verificar_risco", return_value=False)
+    mocker.patch(
+        "mtcli_trade.controllers.compra_controller.verificar_risco", return_value=False
+    )
     mocker.patch(
         "mtcli_trade.controllers.compra_controller.preparar_ordem_compra",
         return_value=(MagicMock(), False),
@@ -32,7 +38,9 @@ def test_executar_compra_sucesso(mocker):
 
 
 def test_executar_compra_ordem_invalida(mocker):
-    mocker.patch("mtcli_trade.controllers.compra_controller.verificar_risco", return_value=False)
+    mocker.patch(
+        "mtcli_trade.controllers.compra_controller.verificar_risco", return_value=False
+    )
     mocker.patch(
         "mtcli_trade.controllers.compra_controller.preparar_ordem_compra",
         return_value=(None, None),
@@ -44,7 +52,9 @@ def test_executar_compra_ordem_invalida(mocker):
 
 
 def test_executar_compra_mt5_recusa(mocker, caplog_info):
-    mocker.patch("mtcli_trade.controllers.compra_controller.verificar_risco", return_value=False)
+    mocker.patch(
+        "mtcli_trade.controllers.compra_controller.verificar_risco", return_value=False
+    )
     mocker.patch(
         "mtcli_trade.controllers.compra_controller.preparar_ordem_compra",
         return_value=(MagicMock(), False),
@@ -61,7 +71,9 @@ def test_executar_compra_mt5_recusa(mocker, caplog_info):
 
 
 def test_executar_compra_valueerror(mocker):
-    mocker.patch("mtcli_trade.controllers.compra_controller.verificar_risco", return_value=False)
+    mocker.patch(
+        "mtcli_trade.controllers.compra_controller.verificar_risco", return_value=False
+    )
     mocker.patch(
         "mtcli_trade.controllers.compra_controller.preparar_ordem_compra",
         side_effect=ValueError("Preco obrigatorio"),
@@ -73,7 +85,9 @@ def test_executar_compra_valueerror(mocker):
 
 
 def test_executar_compra_excecao_generica(mocker):
-    mocker.patch("mtcli_trade.controllers.compra_controller.verificar_risco", return_value=False)
+    mocker.patch(
+        "mtcli_trade.controllers.compra_controller.verificar_risco", return_value=False
+    )
     mocker.patch(
         "mtcli_trade.controllers.compra_controller.preparar_ordem_compra",
         side_effect=Exception("Falha inesperada"),

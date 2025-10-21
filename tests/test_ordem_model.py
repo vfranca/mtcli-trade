@@ -1,5 +1,6 @@
-from mtcli_trade.models.ordem_model import criar_ordem, enviar_ordem
 from unittest.mock import MagicMock
+
+from mtcli_trade.models.ordem_model import criar_ordem, enviar_ordem
 
 
 def test_criar_ordem_market(mock_mt5):

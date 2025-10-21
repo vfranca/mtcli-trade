@@ -4,6 +4,7 @@ Camada View: responsável pela exibição dos resultados da operação de compra
 
 import click
 
+
 def exibir_resultado_ordem(resultado: dict):
     """Exibe o resultado do envio da órdem no terminal."""
     status = resultado.get("status")

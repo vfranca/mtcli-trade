@@ -1,12 +1,12 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from click.testing import CliRunner
+import pytest
 
 
 @pytest.fixture(autouse=True)
 def mock_mt5():
     with patch("mtcli_trade.models.ordem_model.mt5") as mt5_mock:
-
         # Configuração simulada da API MT5
         mt5_mock.symbol_select.return_value = True
         mt5_mock.symbol_info_tick.return_value = MagicMock(ask=123.45)

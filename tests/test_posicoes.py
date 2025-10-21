@@ -1,7 +1,8 @@
-import pytest
-from unittest.mock import MagicMock
 import logging
-import MetaTrader5 as mt5
+from unittest.mock import MagicMock
+
+import pytest
+
 from mtcli_trade.models.posicoes_model import (
     buscar_posicoes,
     editar_posicao,

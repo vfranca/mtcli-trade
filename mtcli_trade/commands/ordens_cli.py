@@ -1,9 +1,10 @@
 import click
+
 from mtcli_trade.controllers.ordens_controller import (
-    obter_ordens_pendentes,
     cancelar_ordens_pendentes,
+    obter_ordens_pendentes,
 )
-from mtcli_trade.views.ordens_view import exibir_ordens, exibir_cancelar_ordens
+from mtcli_trade.views.ordens_view import exibir_cancelar_ordens, exibir_ordens
 
 
 @click.command("orders", help="Lista ou cancela ordens pendentes no MetaTrader 5.")

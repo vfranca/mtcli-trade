@@ -1,6 +1,8 @@
-import pytest
 import logging
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+
+import pytest
+
 from mtcli_trade.models import compra_model
 
 
@@ -92,9 +94,9 @@ def test_enviar_ordem_invalida(caplog_info):
 
 def test_enviar_ordem_excecao(mocker, caplog_info):
     mocker.patch(
-        "mtcli_trade.models.compra_model.enviar_ordem", side_effect=Exception("falha MT5")
+        "mtcli_trade.models.compra_model.enviar_ordem",
+        side_effect=Exception("falha MT5"),
     )
     resultado = compra_model.enviar_ordem_compra({"symbol": "WINV25"}, False)
     assert resultado["retcode"] is None
     assert "Erro ao enviar ordem" in caplog_info.text
-

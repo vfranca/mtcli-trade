@@ -1,7 +1,8 @@
 import click
+
+from mtcli_trade.conf import LOT, SL, SYMBOL, TP
 from mtcli_trade.controllers.venda_controller import executar_venda
 from mtcli_trade.views.ordem_view import exibir_resultado_ordem
-from mtcli_trade.conf import SYMBOL, LOT, SL, TP
 
 
 @click.command(

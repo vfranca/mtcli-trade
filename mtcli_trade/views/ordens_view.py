@@ -1,6 +1,5 @@
 import click
 import MetaTrader5 as mt5
-from mtcli_trade.conf import DIGITOS
 
 
 def exibir_ordens(ordens, symbol=None):

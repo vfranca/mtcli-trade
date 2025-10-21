@@ -3,11 +3,12 @@ Model responsável por gerenciar posições abertas e controle de risco diário.
 """
 
 import MetaTrader5 as mt5
+
 from mtcli.logger import setup_logger
 from mtcli.mt5_context import mt5_conexao
 from mtcli_trade.conf import LOSS_LIMIT, STATUS_FILE
-from mtcli_trade.models.risco_model import controlar_risco
 from mtcli_trade.models.ordem_model import criar_ordem, enviar_ordem
+from mtcli_trade.models.risco_model import controlar_risco
 
 log = setup_logger()
 
@@ -46,7 +47,9 @@ def encerra_posicoes(symbol: str | None = None):
     resultados = []
     with mt5_conexao():
         try:
-            posicoes = mt5.positions_get(symbol=symbol) if symbol else mt5.positions_get()
+            posicoes = (
+                mt5.positions_get(symbol=symbol) if symbol else mt5.positions_get()
+            )
             if not posicoes:
                 log.info("Nenhuma posição aberta encontrada.")
                 return resultados
@@ -83,12 +86,16 @@ def encerra_posicoes(symbol: str | None = None):
 
                 # Normaliza resultado em dict
                 retcode = getattr(resultado, "retcode", resultado.get("retcode", None))
-                resultados.append({"symbol": p.symbol, "ticket": p.ticket, "retcode": retcode})
+                resultados.append(
+                    {"symbol": p.symbol, "ticket": p.ticket, "retcode": retcode}
+                )
 
                 if retcode in (mt5.TRADE_RETCODE_DONE, 10009):
                     log.info(f"Posição {p.ticket} ({p.symbol}) encerrada com sucesso.")
                 else:
-                    log.error(f"Falha ao encerrar {p.symbol} (ticket {p.ticket}): retcode={retcode}")
+                    log.error(
+                        f"Falha ao encerrar {p.symbol} (ticket {p.ticket}): retcode={retcode}"
+                    )
 
         except Exception as e:
             log.exception(f"Erro ao encerrar posições: {e}")

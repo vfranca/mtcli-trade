@@ -1,7 +1,7 @@
 from mtcli_trade.commands.compra_cli import compra_cmd
-from mtcli_trade.commands.venda_cli import venda_cmd
 from mtcli_trade.commands.ordens_cli import ordens_cmd
 from mtcli_trade.commands.posicoes_cli import posicoes_cmd
+from mtcli_trade.commands.venda_cli import venda_cmd
 
 
 def register(cli):

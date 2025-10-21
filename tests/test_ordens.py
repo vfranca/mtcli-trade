@@ -1,14 +1,15 @@
-import pytest
 import time
-from unittest.mock import patch, MagicMock
-from click.testing import CliRunner
+from unittest.mock import MagicMock, patch
 
-from mtcli_trade.controllers.ordens_controller import (
-    obter_ordens_pendentes,
-    cancelar_ordens_pendentes,
-)
-from mtcli_trade.views.ordens_view import exibir_ordens, exibir_cancelar_ordens
+from click.testing import CliRunner
+import pytest
+
 from mtcli_trade.commands.ordens_cli import ordens_cmd
+from mtcli_trade.controllers.ordens_controller import (
+    cancelar_ordens_pendentes,
+    obter_ordens_pendentes,
+)
+from mtcli_trade.views.ordens_view import exibir_cancelar_ordens, exibir_ordens
 
 
 # ==== UNIT TESTS - MODEL ====

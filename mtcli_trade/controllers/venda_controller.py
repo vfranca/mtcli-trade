@@ -2,12 +2,12 @@
 Camada Controller: coordena a execução de ordens de venda.
 """
 
-from mtcli_trade.models.venda_model import (
-    verificar_risco,
-    preparar_ordem_venda,
-    enviar_ordem_venda,
-)
 from mtcli.logger import setup_logger
+from mtcli_trade.models.venda_model import (
+    enviar_ordem_venda,
+    preparar_ordem_venda,
+    verificar_risco,
+)
 
 log = setup_logger()
 

@@ -3,10 +3,11 @@ Camada Model responsável pela lógica de ordens de compra no MetaTrader 5.
 """
 
 import MetaTrader5 as mt5
-from mtcli_trade.models.risco_model import controlar_risco
-from mtcli_trade.models.ordem_model import inicializar, criar_ordem, enviar_ordem
-from mtcli_trade.conf import STATUS_FILE, LOSS_LIMIT
+
 from mtcli.logger import setup_logger
+from mtcli_trade.conf import LOSS_LIMIT, STATUS_FILE
+from mtcli_trade.models.ordem_model import criar_ordem, enviar_ordem, inicializar
+from mtcli_trade.models.risco_model import controlar_risco
 
 log = setup_logger()
 

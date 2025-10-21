@@ -1,10 +1,12 @@
+from collections.abc import Sequence
+
 import click
 import MetaTrader5 as mt5
-from typing import Sequence, Optional
+
 from mtcli_trade.conf import DIGITOS
 
 
-def exibir_posicoes(posicoes: Sequence, symbol: Optional[str] = None):
+def exibir_posicoes(posicoes: Sequence, symbol: str | None = None):
     """Imprime no terminal as posições passadas (lista pode estar vazia)."""
     if not posicoes:
         msg = (

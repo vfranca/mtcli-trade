@@ -1,7 +1,8 @@
 import click
+
 from mtcli_trade.controllers.posicoes_controller import (
-    obter_posicoes,
     encerrar_posicoes,
+    obter_posicoes,
 )
 from mtcli_trade.views.posicoes_view import (
     exibir_posicoes,
