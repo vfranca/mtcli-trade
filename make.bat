@@ -3,7 +3,7 @@ SET CMD=%1
 
 IF /i "%CMD%"=="test" (
 	echo Executando testes...
-	poetry run pytest --cov=mtcli_volume --cov-report=html
+	poetry run pytest --cov=mtcli_trade --cov-report=html
 	goto :EOF
 )
 
