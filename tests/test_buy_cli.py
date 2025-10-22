@@ -1,5 +1,5 @@
-import pytest
 from click.testing import CliRunner
+
 from mtcli_trade.commands.buy import buy
 
 

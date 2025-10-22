@@ -1,5 +1,6 @@
-from mtcli_trade.views.orders_view import exibir_ordens
 from click.testing import CliRunner
+
+from mtcli_trade.views.orders_view import exibir_ordens
 
 
 def test_exibir_ordens_vazias():

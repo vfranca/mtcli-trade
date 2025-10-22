@@ -1,10 +1,9 @@
 """Comando para encerrar todas as posições."""
 
 import click
-import MetaTrader5 as mt5
-from mtcli.conecta import conectar, shutdown
+
 from mtcli.logger import setup_logger
-from mtcli_trade.models.posicoes_model import existem_posicoes, encerra_posicoes
+from mtcli_trade.models.posicoes_model import encerra_posicoes, existem_posicoes
 
 log = setup_logger()
 

@@ -3,21 +3,27 @@ SET CMD=%1
 
 IF /i "%CMD%"=="test" (
 	echo Executando testes...
-	poetry run pytest --cov=mtcli_trade --cov-report=html
+	poetry run pytest --cov=mtcli_volume --cov-report=html
 	goto :EOF
 )
 
-IF /i "%CMD%"=="format" (
-	echo Formatando o codigo com black...
-	poetry run black .
+IF "%CMD%"=="format" (
+	echo Formatando o codigo com ruff...
+	poetry run ruff format .
     goto :EOF
 )
 
-IF "%CMD%"=="check" (
-	echo Verificando o codigo com black...
-	poetry run black --check .
+IF /i "%CMD%"=="check" (
+	echo Verificando o codigo com ruff...
+	poetry run ruff check .
+	goto :EOF
+)
+
+IF /i "%CMD%"=="lint" (
+	echo executando linter com ruff...
+	poetry run ruff check . --fix
 	goto :EOF
 )
 
 echo Comando invalido: %CMD%
-echo Uso: make [test] [format] [check]
+echo Uso: make [test] [format] [check] [lint]

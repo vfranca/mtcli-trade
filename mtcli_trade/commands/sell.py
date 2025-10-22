@@ -2,18 +2,19 @@
 
 import click
 import MetaTrader5 as mt5
+
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
-from mtcli_trade.models.risco_model import controlar_risco
-from mtcli_trade.models.ordem_model import inicializar, criar_ordem, enviar_ordem
 from mtcli_trade.conf import (
-    SYMBOL,
+    LOSS_LIMIT,
     LOT,
     SL,
-    TP,
-    LOSS_LIMIT,
     STATUS_FILE,
+    SYMBOL,
+    TP,
 )
+from mtcli_trade.models.ordem_model import criar_ordem, enviar_ordem, inicializar
+from mtcli_trade.models.risco_model import controlar_risco
 
 log = setup_logger()
 

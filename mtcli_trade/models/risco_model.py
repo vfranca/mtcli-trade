@@ -1,14 +1,16 @@
 """Controle automático de risco baseado no lucro/prejuízo da conta."""
 
 from datetime import date
-from mtcli.logger import setup_logger
+
 from mtcli_risco.models.checar_model import (
-    carregar_estado,
-    salvar_estado,
-    risco_excedido,
-    encerrar_todas_posicoes,
     cancelar_todas_ordens,
+    carregar_estado,
+    encerrar_todas_posicoes,
+    risco_excedido,
+    salvar_estado,
 )
+
+from mtcli.logger import setup_logger
 
 log = setup_logger()
 

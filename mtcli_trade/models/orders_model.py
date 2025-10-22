@@ -1,4 +1,5 @@
 import MetaTrader5 as mt5
+
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 from mtcli_trade.conf import DIGITOS
@@ -18,7 +19,9 @@ def formatar_ordem(ordem):
     tipo = (
         "COMPRA"
         if ordem.type == mt5.ORDER_TYPE_BUY_LIMIT
-        else "VENDA" if ordem.type == mt5.ORDER_TYPE_SELL_LIMIT else str(ordem.type)
+        else "VENDA"
+        if ordem.type == mt5.ORDER_TYPE_SELL_LIMIT
+        else str(ordem.type)
     )
     return {
         "tipo": tipo,

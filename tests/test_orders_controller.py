@@ -1,4 +1,5 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from mtcli_trade.controllers.orders_controller import obter_ordens_pendentes
 
 

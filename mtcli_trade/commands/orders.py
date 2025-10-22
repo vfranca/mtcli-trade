@@ -1,4 +1,5 @@
 import click
+
 from mtcli_trade.controllers.orders_controller import obter_ordens_pendentes
 from mtcli_trade.views.orders_view import exibir_ordens
 
