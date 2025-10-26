@@ -1,4 +1,4 @@
-"""Comando para executar compra a mercado ou pendente."""
+"""Comando para executar venda a mercado ou pendente."""
 
 import click
 import MetaTrader5 as mt5
@@ -20,23 +20,26 @@ log = setup_logger()
 
 
 @click.command(
-    "buy", help="Envia ordem de compra a mercado ou pendente, com SL e TP opcionais."
+    "sell", help="Envia ordem de venda a mercado ou pendente, com SL e TP opcionais."
 )
 @click.version_option(package_name="mtcli-trade")
 @click.option(
     "--symbol", "-s", default=SYMBOL, help="Símbolo do ativo (default WINV25)."
 )
 @click.option(
-    "--lot", type=float, default=LOT, help="Quantidade de contratos (default 1.0)"
+    "--lot",
+    type=float,
+    default=LOT,
+    help="Quantidade de contratos (default =1.0)",
 )
-@click.option("-sl", type=float, default=SL, help="Stop loss (em pontos) (default 150)")
 @click.option(
-    "-tp", type=float, default=TP, help="Take profit (em pontos) (default 300)"
+    "-sl", type=float, default=SL, help="Stop loss (em pontos) (default 150)."
 )
-@click.option("--limit", "-l", is_flag=True, help="Envia ordem limit (buy limit)")
+@click.option("-tp", type=float, default=TP, help="Take profit (em pontos)")
+@click.option("--limit", "-l", is_flag=True, help="Envia ordem limit (sell limit)")
 @click.option("--preco", "-pr", type=float, default=None, help="Preço da ordem limit")
-def buy(symbol, lot, sl, tp, limit, preco):
-    """Compra a mercado ou pendente com SL e TP."""
+def venda(symbol, lot, sl, tp, limit, preco):
+    """Venda a mercado ou pendente com sl e tp."""
     conectar()
 
     # ⚠ Verifica risco antes de enviar qualquer ordem
@@ -56,15 +59,12 @@ def buy(symbol, lot, sl, tp, limit, preco):
             shutdown()
             return
         price = preco
-        order_type = mt5.ORDER_TYPE_BUY_LIMIT
+        order_type = mt5.ORDER_TYPE_SELL_LIMIT
     else:
-        price = tick.ask
-        order_type = mt5.ORDER_TYPE_BUY
+        price = tick.bid
+        order_type = mt5.ORDER_TYPE_SELL
 
     ordem = criar_ordem(symbol, lot, sl, tp, price, order_type, limit)
     enviar_ordem(ordem, limit)
     shutdown()
 
-
-if __name__ == "__main__":
-    buy()

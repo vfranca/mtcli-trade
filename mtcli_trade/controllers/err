@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Administrador\AppData\Local\pypoetry\Cache\virtualenvs\mtcli-trade-iyyNKKNu-py3.13\Scripts\mt.exe\__main__.py", line 4, in <module>
+    from mtcli.mt import mt
+  File "C:\Users\Administrador\AppData\Local\pypoetry\Cache\virtualenvs\mtcli-trade-iyyNKKNu-py3.13\Lib\site-packages\mtcli\mt.py", line 41, in <module>
+    load_plugins()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\Administrador\AppData\Local\pypoetry\Cache\virtualenvs\mtcli-trade-iyyNKKNu-py3.13\Lib\site-packages\mtcli\mt.py", line 27, in load_plugins
+    plugin = ep.load()
+  File "C:\Python313\Lib\importlib\metadata\__init__.py", line 179, in load
+    module = import_module(match.group('module'))
+  File "C:\Python313\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrador\cli\mtcli-trade\mtcli_trade\plugin.py", line 1, in <module>
+    from mtcli_trade.trade import trade
+  File "C:\Users\Administrador\cli\mtcli-trade\mtcli_trade\trade.py", line 7, in <module>
+    @click.group()
+     ^^^^^
+NameError: name 'click' is not defined. Did you mean: 'slice'?

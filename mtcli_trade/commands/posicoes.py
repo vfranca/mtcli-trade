@@ -16,7 +16,7 @@ log = setup_logger()
 )
 @click.version_option(package_name="mtcli-trade")
 @click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
-def positions(symbol):
+def posicoes(symbol):
     """Lista todas as posições abertas (ou de um símbolo)"""
     conectar()
 
@@ -45,6 +45,3 @@ def positions(symbol):
 
     shutdown()
 
-
-if __name__ == "__main__":
-    positions()

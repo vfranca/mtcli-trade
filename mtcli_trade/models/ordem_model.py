@@ -1,25 +1,20 @@
-"""Modelo da execução da órdem."""
-
-import click
 import MetaTrader5 as mt5
-
-from mtcli.conecta import conectar, shutdown
+from mtcli.mt5_context import mt5_conexao
 from mtcli.logger import setup_logger
 
 log = setup_logger()
 
 
 def inicializar(symbol):
-    conectar()
-    if not mt5.symbol_select(symbol, True):
-        click.echo(f"Erro ao selecionar símbolo {symbol}")
-        shutdown()
-        return None
-    tick = mt5.symbol_info_tick(symbol)
-    if not tick:
-        click.echo(f"Erro ao obter cotação de {symbol}")
-        shutdown()
-        return None
+    with mt5_conexao():
+        if not mt5.symbol_select(symbol, True):
+            log.error(f"Erro ao selecionar símbolo {symbol}")
+            return None
+        tick = mt5.symbol_info_tick(symbol)
+        if not tick:
+            log.error(f"Erro ao obter preco de {symbol}")
+            return None
+
     return tick
 
 
