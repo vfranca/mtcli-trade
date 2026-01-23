@@ -4,7 +4,7 @@ Controller de posições abertas.
 
 from mtcli.logger import setup_logger
 from ..services.positions_service import buscar_posicoes_mt5
-from ..models.posicoes_model import normalizar_posicao
+from ..models.positions_model import normalizar_posicao
 
 log = setup_logger()
 
