@@ -5,7 +5,7 @@ import MetaTrader5 as mt5
 from mtcli.conecta import conectar, shutdown
 from mtcli.logger import setup_logger
 
-from mtcli_trade.conf import DIGITOS
+from ..conf import DIGITOS
 
 log = setup_logger()
 

@@ -1,4 +1,4 @@
-from mtcli_trade.models.orders_model import buscar_ordens, formatar_ordem
+from ..models.orders_model import buscar_ordens, formatar_ordem
 from mtcli.logger import setup_logger
 
 log = setup_logger()
