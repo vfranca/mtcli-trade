@@ -6,14 +6,10 @@ import click
 from ..controllers.zera_controller import zerar_posicoes
 
 
-@click.command(
-    "zera",
-    help="Encerra todas as posições abertas (ou de um ativo específico).",
-)
-@click.version_option(package_name="mtcli-trade")
-@click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
+@click.command()
+@click.option("--symbol", "-s", default=None, show_default=True, help="Codigo do simbolo.")
 def zera(symbol):
-    """Zera posições abertas."""
+    """Zera todas as posições abertas ou de um simbolo."""
     resultado = zerar_posicoes(symbol)
 
     if resultado["total"] == 0:
