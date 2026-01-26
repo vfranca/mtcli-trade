@@ -6,14 +6,10 @@ import click
 from ..controllers.cancel_controller import cancelar_ordens
 
 
-@click.command(
-    "cancel",
-    help="Cancela ordens pendentes (todas ou por símbolo).",
-)
-@click.version_option(package_name="mtcli-trade")
-@click.option("--symbol", "-s", default=None, help="Símbolo do ativo (opcional)")
+@click.command()
+@click.option("--symbol", "-s", default=None, show_default=True, help="Símbolo do ativo (opcional)")
 def cancel(symbol):
-    """Cancela ordens pendentes."""
+    """Cancela ordens pendentes (todas ou por simbolo)."""
     resultado = cancelar_ordens(symbol)
 
     if resultado["total"] == 0:

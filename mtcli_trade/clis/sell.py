@@ -9,7 +9,7 @@ from ..conf import SYMBOL, LOT, SL, TP
 @click.option("-sl", default=SL, type=float, show_default=True, help="Stop loss em pontos.")
 @click.option("-tp", default=TP, type=float, show_default=True, help="Take profit em pontos.")
 @click.option("--limit", "-lm", is_flag=True, help="Ordem limitada.")
-@click.option("--stop", "-s", is_flag=True, help="Ordem stop.")
+@click.option("--stop", "-st", is_flag=True, help="Ordem stop.")
 @click.option("--preco", "-p", type=float, help="Preco de entrada para ordem pendente.")
 def sell(symbol, lot, sl, tp, limit, stop, preco):
     """Envia ordem de VENDA (market | limit | stop)."""
