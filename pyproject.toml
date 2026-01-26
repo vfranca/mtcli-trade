@@ -1,6 +1,6 @@
 [project]
 name = "mtcli-trade"
-version = "2.0.0.dev0"
+version = "2.0.0.dev1"
 description = "Plugin mtcli para gerenciamento de órdens"
 readme = "README.md"
 authors = [
