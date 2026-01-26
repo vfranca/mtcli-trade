@@ -13,9 +13,9 @@ def trade():
     pass
 
 
-trade.add_command(buy)
-trade.add_command(sell)
-trade.add_command(orders)
-trade.add_command(positions)
-trade.add_command(cancel)
-trade.add_command(zera)
+trade.add_command(buy, name="buy")
+trade.add_command(sell, name="sell")
+trade.add_command(orders, name="pend")
+trade.add_command(positions, name="pos")
+trade.add_command(cancel, name="x")
+trade.add_command(zera, name="z")
