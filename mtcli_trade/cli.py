@@ -15,7 +15,7 @@ def trade():
 
 trade.add_command(buy, name="buy")
 trade.add_command(sell, name="sell")
-trade.add_command(orders, name="pend")
+trade.add_command(orders, name="orders")
 trade.add_command(positions, name="pos")
-trade.add_command(cancel, name="x")
-trade.add_command(zera, name="z")
+trade.add_command(cancel, name="cancel")
+trade.add_command(zera, name="zera")
