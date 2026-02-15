@@ -1,13 +1,18 @@
 """
-Serviços de integração com o MetaTrader 5 (MT5).
+Camada de serviço responsável pela integração com MetaTrader 5.
 
-Este módulo é a ÚNICA camada autorizada a:
-- Conectar/desconectar do MT5
+REGRAS ARQUITETURAIS:
+- Esta é a única camada autorizada a acessar mt5.*
+- Controllers e Models NÃO devem importar MetaTrader5 diretamente.
+- Cada operação abre e fecha conexão de forma segura.
+- Todas as falhas são convertidas em RuntimeError.
+
+Responsabilidades:
+- Conectar / desconectar do MT5
+- Obter ticks
 - Enviar ordens
 - Cancelar ordens
-- Obter ticks e informações de mercado
-
-Controllers e models nunca devem acessar o MT5 diretamente.
+- Fechar posições
 """
 
 import MetaTrader5 as mt5
@@ -18,20 +23,25 @@ log = setup_logger()
 
 
 # ==========================================================
-# UTILIDADES BÁSICAS
+# CONTROLE DE CONEXÃO
 # ==========================================================
 
 def _conectar():
     """
-    Garante conexão com o MT5.
+    Garante conexão ativa com o MetaTrader 5.
+
+    Raises:
+        RuntimeError: se não for possível conectar.
     """
     if not mt5.initialize():
-        conectar()
+        log.debug("MT5 não inicializado. Tentando conectar via mtcli.")
+        if not conectar():
+            raise RuntimeError("Falha ao conectar ao MetaTrader 5")
 
 
 def _desconectar():
     """
-    Encerra a conexão com o MT5.
+    Encerra conexão com o MT5 de forma segura.
     """
     shutdown()
 
@@ -44,9 +54,14 @@ def obter_tick(symbol):
     """
     Retorna o tick atual de um símbolo.
 
-    :param symbol: Ativo (ex: WIN, WDO, PETR4)
-    :return: mt5.Tick
-    :raises RuntimeError: se não for possível obter o tick
+    Args:
+        symbol (str): Código do ativo.
+
+    Returns:
+        mt5.Tick: Objeto contendo bid/ask.
+
+    Raises:
+        RuntimeError: se não for possível obter tick.
     """
     _conectar()
     try:
@@ -54,10 +69,12 @@ def obter_tick(symbol):
             raise RuntimeError(f"Erro ao selecionar símbolo {symbol}")
 
         tick = mt5.symbol_info_tick(symbol)
-        if not tick:
+
+        if tick is None:
             raise RuntimeError(f"Erro ao obter tick de {symbol}")
 
         return tick
+
     finally:
         _desconectar()
 
@@ -68,16 +85,25 @@ def obter_tick(symbol):
 
 def enviar_ordem_mt5(ordem):
     """
-    Envia uma ordem ao MT5.
+    Envia uma ordem ao MetaTrader 5.
 
-    :param ordem: dict compatível com mt5.order_send
-    :return: resultado do MT5
-    :raises RuntimeError: em caso de falha
+    Args:
+        ordem (dict): Payload compatível com mt5.order_send.
+
+    Returns:
+        mt5.OrderSendResult
+
+    Raises:
+        RuntimeError: em caso de falha operacional.
     """
     _conectar()
     try:
         log.debug(f"Enviando ordem MT5: {ordem}")
+
         resultado = mt5.order_send(ordem)
+
+        if resultado is None:
+            raise RuntimeError("MetaTrader 5 não retornou resposta ao enviar ordem")
 
         if resultado.retcode not in (
             mt5.TRADE_RETCODE_DONE,
@@ -89,9 +115,13 @@ def enviar_ordem_mt5(ordem):
             )
 
         log.info(
-            f"Ordem enviada com sucesso | ticket={resultado.order} | retcode={resultado.retcode}"
+            f"Ordem enviada com sucesso | "
+            f"ticket={resultado.order} | "
+            f"retcode={resultado.retcode}"
         )
+
         return resultado
+
     finally:
         _desconectar()
 
@@ -104,9 +134,14 @@ def cancelar_ordem_mt5(ordem):
     """
     Cancela uma ordem pendente específica.
 
-    :param ordem: objeto retornado por mt5.orders_get
-    :return: resultado do MT5
-    :raises RuntimeError: se falhar
+    Args:
+        ordem: Objeto retornado por mt5.orders_get.
+
+    Returns:
+        mt5.OrderSendResult
+
+    Raises:
+        RuntimeError: se falhar.
     """
     _conectar()
     try:
@@ -119,7 +154,11 @@ def cancelar_ordem_mt5(ordem):
         }
 
         log.debug(f"Cancelando ordem MT5: {req}")
+
         resultado = mt5.order_send(req)
+
+        if resultado is None:
+            raise RuntimeError("MetaTrader 5 não retornou resposta ao cancelar ordem")
 
         if resultado.retcode != mt5.TRADE_RETCODE_DONE:
             raise RuntimeError(
@@ -128,7 +167,9 @@ def cancelar_ordem_mt5(ordem):
             )
 
         log.info(f"Ordem cancelada com sucesso | ticket={ordem.ticket}")
+
         return resultado
+
     finally:
         _desconectar()
 
@@ -141,13 +182,20 @@ def fechar_posicao_mt5(posicao):
     """
     Fecha uma posição aberta.
 
-    :param posicao: objeto retornado por mt5.positions_get
-    :return: resultado do MT5
+    Args:
+        posicao: Objeto retornado por mt5.positions_get.
+
+    Returns:
+        mt5.OrderSendResult
+
+    Raises:
+        RuntimeError: se falhar.
     """
     _conectar()
     try:
         tick = mt5.symbol_info_tick(posicao.symbol)
-        if not tick:
+
+        if tick is None:
             raise RuntimeError(f"Erro ao obter tick para {posicao.symbol}")
 
         ordem = {
@@ -172,7 +220,11 @@ def fechar_posicao_mt5(posicao):
         }
 
         log.debug(f"Fechando posição MT5: {ordem}")
+
         resultado = mt5.order_send(ordem)
+
+        if resultado is None:
+            raise RuntimeError("MetaTrader 5 não retornou resposta ao fechar posição")
 
         if resultado.retcode != mt5.TRADE_RETCODE_DONE:
             raise RuntimeError(
@@ -181,8 +233,12 @@ def fechar_posicao_mt5(posicao):
             )
 
         log.info(
-            f"Posição encerrada | ticket={posicao.ticket} | symbol={posicao.symbol}"
+            f"Posição encerrada | "
+            f"ticket={posicao.ticket} | "
+            f"symbol={posicao.symbol}"
         )
+
         return resultado
+
     finally:
         _desconectar()

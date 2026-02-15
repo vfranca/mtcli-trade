@@ -1,14 +1,20 @@
 """
-Comando de envio de ordens de VENDA.
+Comando único para envio de ordens (BUY ou SELL).
 """
 
 import click
-from ..controllers.sell_controller import SellController
+from ..controllers.order_factory import OrderFactory
 from ..views.order_view import exibir_resultado_ordem
 from ..conf import SYMBOL, LOT, SL, TP
 
 
 @click.command()
+@click.option(
+    "--side", "-sd",
+    type=click.Choice(["buy", "sell"], case_sensitive=False),
+    required=True,
+    help="Lado da operação: buy ou sell."
+)
 @click.option(
     "--symbol", "-s",
     default=SYMBOL,
@@ -39,23 +45,24 @@ from ..conf import SYMBOL, LOT, SL, TP
 @click.option(
     "--limit", "-lm",
     is_flag=True,
-    help="Envia ordem limitada (SELL LIMIT)."
+    help="Envia ordem limitada."
 )
 @click.option(
     "--stop", "-st",
     is_flag=True,
-    help="Envia ordem stop (SELL STOP)."
+    help="Envia ordem stop."
 )
 @click.option(
-    "--preco", "-p",
+    "--price", "-p",
     type=float,
     help="Preço de entrada para ordem pendente."
 )
-def sell(symbol, lot, sl, tp, limit, stop, preco):
+def trade(side, symbol, lot, sl, tp, limit, stop, price):
     """
-    Envia ordem de VENDA (market, limit ou stop).
+    Envia ordem de compra ou venda (market, limit ou stop).
     """
-    controller = SellController()
+
+    controller = OrderFactory.create(side)
 
     try:
         resultado = controller.executar(
@@ -65,11 +72,11 @@ def sell(symbol, lot, sl, tp, limit, stop, preco):
             tp=tp,
             limit=limit,
             stop=stop,
-            preco=preco,
+            preco=price,
         )
 
         if resultado:
             exibir_resultado_ordem(resultado)
 
     except Exception as e:
-        click.echo(f"Falha ao enviar ordem de venda: {e}")
+        click.echo(f"Falha ao enviar ordem: {e}")

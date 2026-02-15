@@ -1,17 +1,25 @@
 """
-Controller base para envio de ordens (market, limit, stop).
+Controller base para envio de ordens.
 
 Responsável por:
-- Validação de flags
-- Controle de risco
-- Inicialização do símbolo
-- Resolução do tipo de ordem
-- Orquestração entre models e services
+- Validar flags
+- Aplicar controle de risco
+- Obter tick
+- Resolver tipo de ordem
+- Criar payload
+- Enviar ao MT5
+- Normalizar resultado
+
+Subclasses devem definir:
+    ORDER_TYPE_MARKET
+    ORDER_TYPE_LIMIT
+    ORDER_TYPE_STOP
+    PRICE_FROM_TICK ("ask" ou "bid")
 """
 
 import MetaTrader5 as mt5
 from mtcli.logger import setup_logger
-from ..models.ordem_model import criar_ordem
+from ..models.order_model import criar_ordem
 from ..models.risco_model import controlar_risco
 from ..services.mt5_service import obter_tick, enviar_ordem_mt5
 from ..conf import LOSS_LIMIT, STATUS_FILE
@@ -20,32 +28,23 @@ log = setup_logger()
 
 
 class BaseOrderController:
-    """
-    Controller base para BUY e SELL.
-    As subclasses devem definir:
-    - ORDER_TYPE_MARKET
-    - ORDER_TYPE_LIMIT
-    - ORDER_TYPE_STOP
-    - PRICE_FROM_TICK ("ask" ou "bid")
-    """
 
     ORDER_TYPE_MARKET = None
     ORDER_TYPE_LIMIT = None
     ORDER_TYPE_STOP = None
-
-    PRICE_FROM_TICK = None  # "ask" ou "bid"
+    PRICE_FROM_TICK = None
 
     def executar(self, symbol, lot, sl, tp, limit, stop, preco):
         """
-        Executa o fluxo completo de envio de ordem.
+        Executa fluxo completo de envio de ordem.
 
-        Retorna um dicionário normalizado com o resultado da operação,
-        pronto para ser consumido pela View.
+        Returns:
+            dict: Resultado normalizado.
 
-        :raises ValueError: erro de validação de parâmetros
-        :return: dict com resultado da ordem
+        Raises:
+            ValueError
+            RuntimeError
         """
-
         self._validar_flags(limit, stop)
 
         if controlar_risco(STATUS_FILE, LOSS_LIMIT):
@@ -76,7 +75,7 @@ class BaseOrderController:
 
         return self._normalizar_resultado(resultado_mt5, symbol, lot, price)
 
-    # ------------------------------------------------------------------
+    # -----------------------------------------------------
 
     @staticmethod
     def _validar_flags(limit, stop):
@@ -84,9 +83,6 @@ class BaseOrderController:
             raise ValueError("Use apenas --limit OU --stop, nunca ambos.")
 
     def _resolver_tipo_ordem(self, tick, limit, stop, preco):
-        """
-        Resolve o tipo da ordem e o preço correto.
-        """
         if limit:
             if preco is None:
                 raise ValueError("Ordens limit exigem --preco")
@@ -100,18 +96,17 @@ class BaseOrderController:
         price = getattr(tick, self.PRICE_FROM_TICK)
         return self.ORDER_TYPE_MARKET, price, False
 
-    # ------------------------------------------------------------------
+    # -----------------------------------------------------
 
     @staticmethod
     def _normalizar_resultado(res, symbol, lot, price):
-        """
-        Normaliza o resultado retornado pelo MT5
-        para um formato simples e previsível.
-        """
         if res is None:
             raise RuntimeError("Nenhuma resposta recebida do MetaTrader 5")
 
-        sucesso = res.retcode == mt5.TRADE_RETCODE_DONE
+        sucesso = res.retcode in (
+            mt5.TRADE_RETCODE_DONE,
+            mt5.TRADE_RETCODE_PLACED,
+        )
 
         return {
             "sucesso": sucesso,
