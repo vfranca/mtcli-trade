@@ -1,11 +1,20 @@
 import click
-from ..controllers.positions_controller import obter_posicoes
+from ..controllers.positions_controller import PositionsController
 from ..views.positions_view import exibir_posicoes
 
 
 @click.command()
-@click.option("--symbol", "-s", default=None, show_default=True, help="Codigo do simbolo.")
+@click.option(
+    "--symbol",
+    "-s",
+    default=None,
+    show_default=True,
+    help="Código do símbolo."
+)
 def positions(symbol):
     """Lista posições abertas."""
-    posicoes = obter_posicoes(symbol)
+
+    controller = PositionsController()
+    posicoes = controller.obter_posicoes(symbol)
+
     exibir_posicoes(posicoes, symbol)

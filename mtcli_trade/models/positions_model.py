@@ -10,13 +10,28 @@ import MetaTrader5 as mt5
 from mtcli_trade.conf import DIGITOS
 
 
+# ---------------------------------------------------------
+# Mapeamento de tipos de posição MT5
+# ---------------------------------------------------------
+
+POSITION_TYPE_MAP = {
+    mt5.POSITION_TYPE_BUY: "BUY",
+    mt5.POSITION_TYPE_SELL: "SELL",
+}
+
+
+# ---------------------------------------------------------
+# Função principal de normalização
+# ---------------------------------------------------------
+
 def normalizar_posicao(posicao):
     """
     Converte uma posição MT5 em um dicionário simples.
 
     :param posicao: objeto retornado por mt5.positions_get
-    :return: dict normalizado
+    :return: dict com dados normalizados
     """
+
     return {
         "ticket": posicao.ticket,
         "symbol": posicao.symbol,
@@ -28,6 +43,10 @@ def normalizar_posicao(posicao):
     }
 
 
+# ---------------------------------------------------------
+# Funções auxiliares internas
+# ---------------------------------------------------------
+
 def _tipo_posicao(tipo_mt5):
     """
     Traduz o tipo da posição MT5 para texto legível.
@@ -35,8 +54,4 @@ def _tipo_posicao(tipo_mt5):
     :param tipo_mt5: constante mt5.POSITION_TYPE_*
     :return: str
     """
-    if tipo_mt5 == mt5.POSITION_TYPE_BUY:
-        return "BUY"
-    if tipo_mt5 == mt5.POSITION_TYPE_SELL:
-        return "SELL"
-    return f"TYPE_{tipo_mt5}"
+    return POSITION_TYPE_MAP.get(tipo_mt5, f"TYPE_{tipo_mt5}")
