@@ -1,21 +1,19 @@
 import click
-from .clis.buy import buy
-from .clis.sell import sell
-from .clis.orders import orders
-from .clis.positions import positions
-from .clis.cancel import cancel
-from .clis.zera import zera
+from .commands.trade import trade
+from .commands.orders import orders
+from .commands.positions import positions
+from .commands.cancel import cancel
+from .commands.zera import zera
 
 
 @click.group()
 @click.version_option(package_name="mtcli-trade")
-def trade():
+def cli():
     pass
 
 
-trade.add_command(buy, name="buy")
-trade.add_command(sell, name="sell")
-trade.add_command(orders, name="orders")
-trade.add_command(positions, name="pos")
-trade.add_command(cancel, name="cancel")
-trade.add_command(zera, name="zera")
+cli.add_command(trade, name="trade")
+cli.add_command(orders, name="orders")
+cli.add_command(positions, name="pos")
+cli.add_command(cancel, name="cancel")
+cli.add_command(zera, name="zera")
