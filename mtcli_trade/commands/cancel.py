@@ -1,28 +1,27 @@
-"""
-Cancela ordens pendentes.
-"""
-
 import click
-from ..controllers.cancel_controller import cancelar_ordens
+from ..controllers.cancel_controller import CancelController
+from ..views.cancel_view import exibir_resultado_cancelamento
 
 
 @click.command()
-@click.option("--symbol", "-s", default=None, show_default=True, help="Símbolo do ativo (opcional)")
-def cancel(symbol):
-    """Cancela ordens pendentes (todas ou por simbolo)."""
-    resultado = cancelar_ordens(symbol)
+@click.option(
+    "--ticket",
+    "-t",
+    required=True,
+    type=int,
+    help="Ticket da ordem pendente."
+)
+def cancel(ticket):
+    """
+    Cancela uma ordem pendente pelo ticket.
+    """
 
-    if resultado["total"] == 0:
-        click.echo(
-            f"Nenhuma ordem pendente para {symbol}"
-            if symbol
-            else "Nenhuma ordem pendente encontrada."
-        )
-        return
+    controller = CancelController()
 
-    click.echo(
-        f"Canceladas {resultado['sucesso']} de {resultado['total']} ordens."
-    )
+    resultado = controller.cancelar(ticket)
 
-    if resultado["falha"]:
-        click.echo(f"Falhas: {resultado['falha']}")
+    exibir_resultado_cancelamento(resultado, ticket)
+
+
+if __name__ == "__main__":
+    cancel()

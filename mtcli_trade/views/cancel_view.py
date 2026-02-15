@@ -1,15 +1,19 @@
-def exibir_cancelamento(resultado, symbol=None):
-    if resultado["total"] == 0:
-        print(
-            f"Nenhuma ordem pendente para {symbol}"
-            if symbol
-            else "Nenhuma ordem pendente encontrada."
-        )
+import click
+
+
+def exibir_resultado_cancelamento(resultado, ticket):
+    """
+    Exibe resultado do cancelamento.
+    """
+
+    if resultado is None:
+        click.echo("Falha ao cancelar ordem.")
         return
 
-    print(
-        f"Canceladas {resultado['sucesso']} de {resultado['total']} ordens."
-    )
-
-    if resultado["falha"]:
-        print(f"Falhas: {resultado['falha']}")
+    if resultado.retcode == 10009:
+        click.echo(f"Ordem {ticket} cancelada com sucesso.")
+    else:
+        click.echo(
+            f"Erro ao cancelar ordem {ticket}. "
+            f"Retcode: {resultado.retcode}"
+        )
