@@ -1,5 +1,5 @@
 """
-Controller responsável por obter ordens pendentes.
+Controller responsável por obter e processar ordens pendentes.
 """
 
 from mtcli.logger import setup_logger
@@ -9,25 +9,64 @@ from ..models.orders_model import normalizar_ordem
 log = setup_logger()
 
 
-def obter_ordens_pendentes(symbol=None):
+class OrdersController:
     """
-    Retorna uma lista normalizada de ordens pendentes.
+    Controller de ordens pendentes.
+
+    Responsável por:
+    - Buscar dados no service
+    - Normalizar via model
+    - Registrar logs
     """
-    ordens_raw = buscar_ordens_mt5(symbol)
 
-    if not ordens_raw:
-        log.info(
-            f"Nenhuma ordem pendente para {symbol}"
-            if symbol
-            else "Nenhuma ordem pendente encontrada"
-        )
-        return []
+    def __init__(self):
+        pass
 
-    ordens = [normalizar_ordem(o) for o in ordens_raw]
+    def obter_ordens_pendentes(self, symbol: str | None = None) -> list[dict]:
+        """
+        Retorna lista normalizada de ordens pendentes.
 
-    for o in ordens:
-        log.info(
-            f"{o['tipo']} | {o['symbol']} | vol {o['volume']} | preço {o['preco']} | ticket {o['ticket']}"
-        )
+        Args:
+            symbol (str | None): Filtro opcional por ativo.
 
-    return ordens
+        Returns:
+            list[dict]: Lista de ordens normalizadas.
+        """
+
+        try:
+            ordens_raw = buscar_ordens_mt5(symbol)
+
+            if not ordens_raw:
+                self._log_sem_ordens(symbol)
+                return []
+
+            ordens = [normalizar_ordem(o) for o in ordens_raw]
+
+            self._log_ordens_encontradas(ordens)
+
+            return ordens
+
+        except Exception as e:
+            log.exception("Erro ao obter ordens pendentes")
+            raise e
+
+    # -----------------------------
+    # Métodos privados auxiliares
+    # -----------------------------
+
+    def _log_sem_ordens(self, symbol):
+        if symbol:
+            log.info(f"Nenhuma ordem pendente para {symbol}")
+        else:
+            log.info("Nenhuma ordem pendente encontrada")
+
+    def _log_ordens_encontradas(self, ordens: list[dict]):
+        log.info(f"{len(ordens)} ordem(ns) pendente(s) encontrada(s)")
+
+        for o in ordens:
+            log.info(
+                f"{o['tipo']} | {o['symbol']} | "
+                f"vol {o['volume']} | "
+                f"preço {o['preco']} | "
+                f"ticket {o['ticket']}"
+            )
