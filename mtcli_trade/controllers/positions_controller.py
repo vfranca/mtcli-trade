@@ -5,7 +5,7 @@ Responsável por:
 - Buscar posições via service
 - Normalizar via model
 - Registrar logs
-- Retornar estrutura pronta para view
+- Calcular resumo consolidado
 """
 
 from mtcli.logger import setup_logger
@@ -23,9 +23,6 @@ class PositionsController:
     def obter_posicoes(self, symbol: str | None = None) -> list[dict]:
         """
         Retorna lista de posições abertas normalizadas.
-
-        :param symbol: ativo opcional
-        :return: lista de dicionários
         """
 
         try:
@@ -44,6 +41,37 @@ class PositionsController:
         except Exception:
             log.exception("Erro ao obter posições abertas.")
             raise
+
+    def calcular_resumo(self, posicoes: list[dict]) -> dict:
+        """
+        Calcula resumo consolidado das posições.
+
+        :param posicoes: lista normalizada
+        :return: dict com totais
+        """
+
+        if not posicoes:
+            return {}
+
+        total_volume = sum(p["volume"] for p in posicoes)
+        total_lucro = sum(p["lucro"] for p in posicoes)
+        total_swap = sum(p["swap"] for p in posicoes)
+
+        resumo = {
+            "total_posicoes": len(posicoes),
+            "volume_total": round(total_volume, 2),
+            "lucro_total": round(total_lucro, 2),
+            "swap_total": round(total_swap, 2),
+        }
+
+        log.info(
+            f"Resumo | "
+            f"posições={resumo['total_posicoes']} | "
+            f"volume={resumo['volume_total']} | "
+            f"lucro={resumo['lucro_total']}"
+        )
+
+        return resumo
 
     # -------------------------
     # Métodos auxiliares
