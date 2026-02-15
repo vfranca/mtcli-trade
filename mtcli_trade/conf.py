@@ -12,7 +12,7 @@ Todas as variáveis são convertidas para tipos seguros.
 import os
 from mtcli.conf import config
 
-SECTION = "trade"
+SECTION = "TRADE"
 
 SYMBOL = os.getenv("SYMBOL", config[SECTION].get("symbol", fallback="WINV25"))
 LOT = float(os.getenv("LOT", config[SECTION].getfloat("lot", fallback=1.0)))
