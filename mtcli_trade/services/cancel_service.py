@@ -1,30 +1,25 @@
 """
-Serviço responsável por cancelar ordens pendentes no MT5.
+Serviço responsável por cancelar ordens pendentes.
 """
 
 import MetaTrader5 as mt5
-from mtcli.conecta import conectar, shutdown
+from .mt5_service import MT5Service
+
+mt5_service = MT5Service()
 
 
 def cancelar_ordem_mt5(ticket: int):
     """
-    Cancela uma ordem pendente pelo ticket.
+    Cancela ordem pendente pelo ticket.
 
-    Args:
-        ticket (int): Número do ticket da ordem.
-
-    Returns:
-        TradeResult
+    :param ticket: número do ticket
+    :return: OrderSendResult
     """
-    conectar()
-    try:
-        request = {
-            "action": mt5.TRADE_ACTION_REMOVE,
-            "order": ticket,
-        }
 
-        resultado = mt5.order_send(request)
-        return resultado
+    request = {
+        "action": mt5.TRADE_ACTION_REMOVE,
+        "order": ticket,
+        "comment": "mtcli-trade cancel",
+    }
 
-    finally:
-        shutdown()
+    return mt5_service.enviar_request(request)

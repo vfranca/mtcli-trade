@@ -1,49 +1,45 @@
 """
-Serviço responsável pelo fechamento de posições no MT5.
+Serviço responsável pelo fechamento de posições.
 """
 
 import MetaTrader5 as mt5
-from mtcli.conecta import conectar, shutdown
+from .mt5_service import MT5Service
+
+mt5_service = MT5Service()
 
 
-def fechar_posicao_mt5(posicao):
+def fechar_posicao_mt5(symbol: str, ticket: int, volume: float, tipo_posicao: int):
     """
-    Fecha uma posição individual.
+    Fecha uma posição específica.
 
-    :param posicao: objeto retornado por mt5.positions_get
-    :return: resultado do order_send
+    :param symbol: ativo
+    :param ticket: ticket da posição
+    :param volume: volume da posição
+    :param tipo_posicao: mt5.POSITION_TYPE_*
+    :return: OrderSendResult
     """
 
-    conectar()
-    try:
-        tick = mt5.symbol_info_tick(posicao.symbol)
+    tick = mt5_service.obter_tick(symbol)
 
-        if not tick:
-            return None
+    if tipo_posicao == mt5.POSITION_TYPE_BUY:
+        tipo_ordem = mt5.ORDER_TYPE_SELL
+        preco = tick.bid
+    else:
+        tipo_ordem = mt5.ORDER_TYPE_BUY
+        preco = tick.ask
 
-        # Define lado oposto
-        if posicao.type == mt5.POSITION_TYPE_BUY:
-            tipo_ordem = mt5.ORDER_TYPE_SELL
-            preco = tick.bid
-        else:
-            tipo_ordem = mt5.ORDER_TYPE_BUY
-            preco = tick.ask
+    request = {
+        "action": mt5.TRADE_ACTION_DEAL,
+        "symbol": symbol,
+        "volume": volume,
+        "type": tipo_ordem,
+        "position": ticket,
+        "price": preco,
+        "deviation": 20,
+        "magic": 123456,
+        "comment": "mtcli-trade close",
+        "type_time": mt5.ORDER_TIME_GTC,
+        "type_filling": mt5.ORDER_FILLING_IOC,
+    }
 
-        request = {
-            "action": mt5.TRADE_ACTION_DEAL,
-            "symbol": posicao.symbol,
-            "volume": posicao.volume,
-            "type": tipo_ordem,
-            "position": posicao.ticket,
-            "price": preco,
-            "deviation": 20,
-            "magic": 123456,
-            "comment": "MT CLI Close",
-            "type_time": mt5.ORDER_TIME_GTC,
-            "type_filling": mt5.ORDER_FILLING_IOC,
-        }
-
-        return mt5.order_send(request)
-
-    finally:
-        shutdown()
+    return mt5_service.enviar_request(request)

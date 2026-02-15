@@ -1,14 +1,20 @@
 """
-Serviço de acesso às ordens pendentes via MT5.
+Serviço de acesso às ordens pendentes.
+
+Não acessa MetaTrader diretamente.
+Utiliza MT5Service como infraestrutura.
 """
 
-import MetaTrader5 as mt5
-from mtcli.conecta import conectar, shutdown
+from .mt5_service import MT5Service
+
+mt5_service = MT5Service()
 
 
-def buscar_ordens_mt5(symbol=None):
-    conectar()
-    try:
-        return mt5.orders_get(symbol=symbol) if symbol else mt5.orders_get()
-    finally:
-        shutdown()
+def buscar_ordens_mt5(symbol: str | None = None):
+    """
+    Retorna ordens pendentes.
+
+    :param symbol: símbolo opcional
+    :return: tuple de ordens
+    """
+    return mt5_service.obter_ordens(symbol)
