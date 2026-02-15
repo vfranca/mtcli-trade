@@ -1,3 +1,16 @@
+"""
+Comando CLI para listagem de ordens pendentes.
+
+Permite:
+- Listar todas as ordens pendentes
+- Filtrar por símbolo específico
+
+Exemplos:
+
+    mt orders
+    mt orders --symbol WINM26
+"""
+
 import click
 from ..controllers.orders_controller import OrdersController
 from ..views.orders_view import exibir_ordens
@@ -5,13 +18,19 @@ from ..views.orders_view import exibir_ordens
 
 @click.command()
 @click.option(
-    "--symbol", "-s",
+    "--symbol",
+    "-s",
     default=None,
     show_default=True,
-    help="Código do ativo."
+    help="Código do ativo para filtrar ordens pendentes."
 )
-def orders(symbol):
-    """Lista todas as ordens pendentes (ou de um símbolo)."""
+def orders(symbol: str | None):
+    """
+    Lista ordens pendentes no MT5.
+
+    Se --symbol for informado, exibe apenas ordens do ativo.
+    Caso contrário, lista todas as ordens pendentes.
+    """
 
     controller = OrdersController()
     ordens = controller.obter_ordens_pendentes(symbol)
