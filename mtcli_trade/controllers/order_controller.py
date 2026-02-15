@@ -3,13 +3,14 @@ Controller genérico com Strategy Pattern.
 """
 
 import MetaTrader5 as mt5
+from ..decorators.mt5_connection import with_mt5
 from ..strategies.strategy_factory import StrategyFactory
 from ..services.mt5_service import MT5Service
 
 
 class OrderController:
     """
-    Controller configurável via OrderFactory.
+    Controller configurável via Strategy Pattern.
     """
 
     def __init__(
@@ -26,6 +27,7 @@ class OrderController:
 
         self.mt5_service = MT5Service()
 
+    @with_mt5
     def executar(
         self,
         symbol,
@@ -42,17 +44,17 @@ class OrderController:
 
         strategy = StrategyFactory.create(limit, stop)
 
-        self.mt5_service.inicializar()
-
         tick = self.mt5_service.obter_tick(symbol)
 
         order_type = strategy.definir_tipo_ordem(self)
         price = strategy.definir_preco(self, tick, preco)
 
         request = {
-            "action": mt5.TRADE_ACTION_DEAL
-            if not (limit or stop)
-            else mt5.TRADE_ACTION_PENDING,
+            "action": (
+                mt5.TRADE_ACTION_DEAL
+                if not (limit or stop)
+                else mt5.TRADE_ACTION_PENDING
+            ),
             "symbol": symbol,
             "volume": lot,
             "type": order_type,
@@ -61,13 +63,9 @@ class OrderController:
             "tp": tp,
             "deviation": 20,
             "magic": 123456,
-            "comment": "MT CLI Order",
+            "comment": "mtcli-trade order",
             "type_time": mt5.ORDER_TIME_GTC,
             "type_filling": mt5.ORDER_FILLING_IOC,
         }
 
-        resultado = self.mt5_service.enviar_ordem(request)
-
-        self.mt5_service.finalizar()
-
-        return resultado
+        return self.mt5_service.enviar_request(request)

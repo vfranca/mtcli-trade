@@ -3,6 +3,7 @@ Controller responsável por obter e processar ordens pendentes.
 """
 
 from mtcli.logger import setup_logger
+from ..decorators.mt5_connection import with_mt5
 from ..services.orders_service import buscar_ordens_mt5
 from ..models.orders_model import normalizar_ordem
 
@@ -12,25 +13,15 @@ log = setup_logger()
 class OrdersController:
     """
     Controller de ordens pendentes.
-
-    Responsável por:
-    - Buscar dados no service
-    - Normalizar via model
-    - Registrar logs
     """
 
-    def __init__(self):
-        pass
-
-    def obter_ordens_pendentes(self, symbol: str | None = None) -> list[dict]:
+    @with_mt5
+    def obter_ordens_pendentes(
+        self,
+        symbol: str | None = None
+    ) -> list[dict]:
         """
         Retorna lista normalizada de ordens pendentes.
-
-        Args:
-            symbol (str | None): Filtro opcional por ativo.
-
-        Returns:
-            list[dict]: Lista de ordens normalizadas.
         """
 
         try:
@@ -46,13 +37,11 @@ class OrdersController:
 
             return ordens
 
-        except Exception as e:
+        except Exception:
             log.exception("Erro ao obter ordens pendentes")
-            raise e
+            raise
 
-    # -----------------------------
-    # Métodos privados auxiliares
-    # -----------------------------
+    # ----------------------------------
 
     def _log_sem_ordens(self, symbol):
         if symbol:

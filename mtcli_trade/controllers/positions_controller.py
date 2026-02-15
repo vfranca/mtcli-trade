@@ -1,14 +1,9 @@
 """
 Controller de posições abertas.
-
-Responsável por:
-- Buscar posições via service
-- Normalizar via model
-- Registrar logs
-- Calcular resumo consolidado
 """
 
 from mtcli.logger import setup_logger
+from ..decorators.mt5_connection import with_mt5
 from ..services.positions_service import buscar_posicoes_mt5
 from ..models.positions_model import normalizar_posicao
 
@@ -20,7 +15,11 @@ class PositionsController:
     Controller responsável por posições abertas.
     """
 
-    def obter_posicoes(self, symbol: str | None = None) -> list[dict]:
+    @with_mt5
+    def obter_posicoes(
+        self,
+        symbol: str | None = None
+    ) -> list[dict]:
         """
         Retorna lista de posições abertas normalizadas.
         """
@@ -32,7 +31,10 @@ class PositionsController:
                 self._log_sem_posicoes(symbol)
                 return []
 
-            posicoes = [normalizar_posicao(p) for p in posicoes_raw]
+            posicoes = [
+                normalizar_posicao(p)
+                for p in posicoes_raw
+            ]
 
             self._log_posicoes_encontradas(posicoes)
 
@@ -45,9 +47,6 @@ class PositionsController:
     def calcular_resumo(self, posicoes: list[dict]) -> dict:
         """
         Calcula resumo consolidado das posições.
-
-        :param posicoes: lista normalizada
-        :return: dict com totais
         """
 
         if not posicoes:
@@ -73,9 +72,7 @@ class PositionsController:
 
         return resumo
 
-    # -------------------------
-    # Métodos auxiliares
-    # -------------------------
+    # ----------------------------------
 
     def _log_sem_posicoes(self, symbol):
         if symbol:
