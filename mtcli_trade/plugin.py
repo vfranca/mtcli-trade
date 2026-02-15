@@ -1,15 +1,18 @@
-from .cli import cli as manager
-from .commands.trade import trade
-from .commands.orders import orders
-from .commands.cancel import cancel
-from .commands.positions import positions
-from .commands.close import close
+"""
+Registro do plugin mtcli-trade no mtcli principal.
+
+Este módulo integra o grupo de comandos do plugin
+ao CLI raiz da aplicação.
+"""
+
+from .cli import cli as trade
 
 
 def register(cli):
-    cli.add_command(manager, name="manager")
+    """
+    Registra o grupo de comandos do plugin no CLI principal.
+
+    Args:
+        cli: instância do click.Group principal do mtcli.
+    """
     cli.add_command(trade, name="trade")
-    cli.add_command(orders, name="orders")
-    cli.add_command(cancel, name="cancel")
-    cli.add_command(positions, name="pos")
-    cli.add_command(close, name="close")
