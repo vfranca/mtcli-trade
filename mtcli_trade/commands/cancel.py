@@ -1,26 +1,42 @@
 import click
 from ..controllers.cancel_controller import CancelController
-from ..views.cancel_view import exibir_resultado_cancelamento
 
 
 @click.command()
 @click.option(
     "--ticket",
     "-t",
-    required=True,
     type=int,
     help="Ticket da ordem pendente."
 )
-def cancel(ticket):
+@click.option(
+    "--symbol",
+    "-s",
+    type=str,
+    help="Cancela todas as ordens pendentes do ativo."
+)
+def cancel(ticket, symbol):
     """
-    Cancela uma ordem pendente pelo ticket.
+    Cancela ordem por ticket ou em massa por símbolo.
     """
+
+    if not ticket and not symbol:
+        raise click.UsageError(
+            "Informe --ticket ou --symbol."
+        )
+
+    if ticket and symbol:
+        raise click.UsageError(
+            "Use apenas --ticket OU --symbol."
+        )
 
     controller = CancelController()
 
-    resultado = controller.cancelar(ticket)
+    if ticket:
+        controller.cancelar_por_ticket(ticket)
 
-    exibir_resultado_cancelamento(resultado, ticket)
+    if symbol:
+        controller.cancelar_por_symbol(symbol)
 
 
 if __name__ == "__main__":
