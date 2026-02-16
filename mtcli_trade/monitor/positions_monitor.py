@@ -1,105 +1,134 @@
 """
-Monitor contínuo de posições abertas.
-
-Detecta:
-- Nova posição aberta
-- Posição fechada
+Monitor contínuo com realização parcial automática em 1R.
 """
 
 import time
-from typing import Dict
+import MetaTrader5 as mt5
+from typing import Set
 from ..decorators.mt5_connection import with_mt5
 from ..services.positions_service import buscar_posicoes_mt5
-from ..events.event_bus import event_bus
-from ..events.events import (
-    POSITION_OPENED,
-    POSITION_CLOSED,
-)
+from ..services.close_service import fechar_posicao_mt5
+from ..services.mt5_service import MT5Service
 
 
 class PositionsMonitor:
     """
-    Monitor contínuo de posições abertas.
+    Monitor contínuo de posições com parcial em 1R.
     """
 
-    def __init__(self, symbol: str | None = None, interval: float = 1.0):
+    def __init__(
+        self,
+        symbol: str | None = None,
+        interval: float = 1.0,
+        parcial_percentual: float = 0.5,
+    ):
         self.symbol = symbol
         self.interval = interval
-        self._snapshot: Dict[int, object] = {}
+        self.parcial_percentual = parcial_percentual
+        self._realizadas: Set[int] = set()
+
+        self.mt5_service = MT5Service()
+
+    # -----------------------------------------------------
 
     @with_mt5
     def iniciar(self):
-        """
-        Inicia loop contínuo de monitoramento.
-        """
-
-        print("Monitor iniciado. Pressione Ctrl+C para sair.")
-
-        # Snapshot inicial
-        self._snapshot = self._obter_snapshot()
+        print("Monitor iniciado (parcial 1R ativa). Ctrl+C para sair.")
 
         try:
             while True:
-                atual = self._obter_snapshot()
+                posicoes = buscar_posicoes_mt5(self.symbol) or []
 
-                self._detectar_novas(atual)
-                self._detectar_fechadas(atual)
-
-                self._snapshot = atual
+                for pos in posicoes:
+                    self._verificar_parcial(pos)
 
                 time.sleep(self.interval)
 
         except KeyboardInterrupt:
             print("\nMonitor finalizado.")
 
-    def _obter_snapshot(self):
-        """
-        Retorna dict {ticket: posicao}
-        """
+    # -----------------------------------------------------
 
-        posicoes = buscar_posicoes_mt5(self.symbol) or []
-        return {p.ticket: p for p in posicoes}
+    def _verificar_parcial(self, pos):
 
-    def _detectar_novas(self, atual):
-        """
-        Detecta posições abertas após snapshot anterior.
-        """
+        if pos.ticket in self._realizadas:
+            return
 
-        novas = set(atual.keys()) - set(self._snapshot.keys())
+        if not pos.sl or pos.sl == 0:
+            return  # Sem SL definido
 
-        for ticket in novas:
-            pos = atual[ticket]
+        tick = self.mt5_service.obter_tick(pos.symbol)
+        if not tick:
+            return
 
-            event_bus.publish(
-                POSITION_OPENED,
-                symbol=pos.symbol,
-                ticket=pos.ticket,
-                volume=pos.volume,
-            )
+        entrada = pos.price_open
+        sl = pos.sl
 
-            print(
-                f"[OPEN] {pos.symbol} | "
-                f"ticket {pos.ticket} | "
-                f"vol {pos.volume}"
-            )
+        # ------------------------
+        # BUY
+        # ------------------------
 
-    def _detectar_fechadas(self, atual):
-        """
-        Detecta posições fechadas após snapshot anterior.
-        """
+        if pos.type == mt5.POSITION_TYPE_BUY:
 
-        fechadas = set(self._snapshot.keys()) - set(atual.keys())
+            r = entrada - sl
+            if r <= 0:
+                return
 
-        for ticket in fechadas:
-            pos = self._snapshot[ticket]
+            alvo_1r = entrada + r
+            preco_atual = tick.bid
 
-            event_bus.publish(
-                POSITION_CLOSED,
-                symbol=pos.symbol,
-                ticket=pos.ticket,
-            )
+            if preco_atual >= alvo_1r:
+                self._executar_parcial(pos)
 
-            print(
-                f"[CLOSE] {pos.symbol} | "
-                f"ticket {pos.ticket}"
-            )
+        # ------------------------
+        # SELL
+        # ------------------------
+
+        elif pos.type == mt5.POSITION_TYPE_SELL:
+
+            r = sl - entrada
+            if r <= 0:
+                return
+
+            alvo_1r = entrada - r
+            preco_atual = tick.ask
+
+            if preco_atual <= alvo_1r:
+                self._executar_parcial(pos)
+
+    # -----------------------------------------------------
+
+    def _executar_parcial(self, pos):
+
+        info = mt5.symbol_info(pos.symbol)
+        if not info:
+            return
+
+        volume_step = info.volume_step
+
+        volume_parcial = pos.volume * self.parcial_percentual
+
+        # Ajusta para múltiplo válido
+        volume_parcial = round(
+            max(volume_step, volume_parcial),
+            2
+        )
+
+        if volume_parcial >= pos.volume:
+            return  # evita fechar tudo
+
+        print(
+            f"[PARCIAL 1R] {pos.symbol} | "
+            f"ticket {pos.ticket} | "
+            f"vol {volume_parcial}"
+        )
+
+        resultado = fechar_posicao_mt5(
+            symbol=pos.symbol,
+            ticket=pos.ticket,
+            volume=volume_parcial,
+            tipo_posicao=pos.type,
+        )
+
+        if resultado and resultado.retcode == mt5.TRADE_RETCODE_DONE:
+            self._realizadas.add(pos.ticket)
