@@ -1,11 +1,11 @@
 """
 Monitor contínuo com multi-alvos em R e stop diário opcional.
+Versão resiliente para execução longa.
 """
 
 import time
 import MetaTrader5 as mt5
 from typing import Dict, List, Set
-from ..decorators.mt5_connection import with_mt5
 from ..services.positions_service import buscar_posicoes_mt5
 from ..services.close_service import fechar_posicao_mt5
 from ..services.mt5_service import MT5Service
@@ -17,6 +17,7 @@ class PositionsMonitor:
     - Multi-alvos baseados em R
     - Parciais configuráveis
     - Stop diário automático
+    - Resiliência a falhas de conexão
     """
 
     def __init__(
@@ -38,31 +39,54 @@ class PositionsMonitor:
 
         self.mt5_service = MT5Service()
 
-    # -----------------------------------------------------
+    # =====================================================
+    # CICLO DE VIDA
+    # =====================================================
 
-    @with_mt5
     def iniciar(self):
+        print("Iniciando conexão com MT5...")
+
+        if not mt5.initialize():
+            codigo, msg = mt5.last_error()
+            raise RuntimeError(f"Falha ao conectar ao MT5 ({codigo}, {msg})")
+
         print("Monitor iniciado. Ctrl+C para sair.")
 
         try:
             while True:
-                posicoes = buscar_posicoes_mt5(self.symbol) or []
-
-                self._atualizar_lucro_dia(posicoes)
-
-                if self._atingiu_stop_diario():
-                    print("STOP DIÁRIO ATINGIDO. Encerrando monitor.")
-                    break
-
-                for pos in posicoes:
-                    self._verificar_alvos(pos)
+                try:
+                    self._ciclo_monitoramento()
+                except Exception as e:
+                    print(f"[ERRO MONITOR] {e}")
 
                 time.sleep(self.interval)
 
         except KeyboardInterrupt:
-            print("\nMonitor finalizado.")
+            print("\nMonitor finalizado pelo usuário.")
 
-    # -----------------------------------------------------
+        finally:
+            print("Encerrando conexão MT5...")
+            mt5.shutdown()
+
+    # =====================================================
+    # CICLO
+    # =====================================================
+
+    def _ciclo_monitoramento(self):
+        posicoes = buscar_posicoes_mt5(self.symbol) or []
+
+        self._atualizar_lucro_dia(posicoes)
+
+        if self._atingiu_stop_diario():
+            print("STOP DIÁRIO ATINGIDO. Encerrando monitor.")
+            raise KeyboardInterrupt
+
+        for pos in posicoes:
+            self._verificar_alvos(pos)
+
+    # =====================================================
+    # LÓGICA DE ALVOS
+    # =====================================================
 
     def _verificar_alvos(self, pos):
 
@@ -79,20 +103,16 @@ class PositionsMonitor:
         entrada = pos.price_open
         sl = pos.sl
 
-        # BUY
         if pos.type == mt5.POSITION_TYPE_BUY:
             r = entrada - sl
             if r <= 0:
                 return
-
             preco_atual = tick.bid
 
-        # SELL
         elif pos.type == mt5.POSITION_TYPE_SELL:
             r = sl - entrada
             if r <= 0:
                 return
-
             preco_atual = tick.ask
 
         else:
@@ -113,7 +133,9 @@ class PositionsMonitor:
             if atingiu:
                 self._executar_parcial(pos, idx)
 
-    # -----------------------------------------------------
+    # =====================================================
+    # EXECUÇÃO PARCIAL
+    # =====================================================
 
     def _executar_parcial(self, pos, idx):
 
@@ -150,7 +172,9 @@ class PositionsMonitor:
         if resultado and resultado.retcode == mt5.TRADE_RETCODE_DONE:
             self._executados[pos.ticket].add(idx)
 
-    # -----------------------------------------------------
+    # =====================================================
+    # STOP DIÁRIO
+    # =====================================================
 
     def _atualizar_lucro_dia(self, posicoes):
         self._lucro_dia = sum(p.profit for p in posicoes)
