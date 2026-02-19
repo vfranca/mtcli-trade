@@ -1,5 +1,6 @@
 """
 Controller genérico com Strategy Pattern.
+Retorna resultado normalizado (dict).
 """
 
 import MetaTrader5 as mt5
@@ -29,6 +30,8 @@ class OrderController:
 
         self.mt5_service = MT5Service()
 
+    # -----------------------------------------------------
+
     @with_mt5
     def executar(
         self,
@@ -41,17 +44,25 @@ class OrderController:
         preco=None,
     ):
         """
-        Executa ordem utilizando Strategy Pattern.
+        Executa ordem.
+        SL e TP são informados em pontos.
+        Retorna dict padronizado.
         """
 
         strategy = StrategyFactory.create(limit, stop)
 
         tick = self.mt5_service.obter_tick(symbol)
+        if not tick:
+            raise RuntimeError("Não foi possível obter tick.")
 
         order_type = strategy.definir_tipo_ordem(self)
         price = strategy.definir_preco(self, tick, preco)
 
         is_market = not (limit or stop)
+
+        sl_price, tp_price = self._calcular_sl_tp(
+            symbol, price, sl, tp, order_type
+        )
 
         request = {
             "action": (
@@ -63,8 +74,8 @@ class OrderController:
             "volume": lot,
             "type": order_type,
             "price": price,
-            "sl": sl,
-            "tp": tp,
+            "sl": sl_price,
+            "tp": tp_price,
             "deviation": 20,
             "magic": 123456,
             "comment": "mtcli-trade order",
@@ -74,16 +85,57 @@ class OrderController:
 
         resultado = self.mt5_service.enviar_request(request)
 
-        # Evento apenas para execução imediata (market)
-        if (
-            is_market
-            and resultado
-            and resultado.retcode == mt5.TRADE_RETCODE_DONE
-        ):
+        sucesso = resultado.retcode in (
+            mt5.TRADE_RETCODE_DONE,
+            mt5.TRADE_RETCODE_PLACED,
+        )
+
+        if is_market and sucesso:
             event_bus.publish(
                 POSITION_OPENED,
                 symbol=symbol,
                 volume=lot,
             )
 
-        return resultado
+        return {
+            "sucesso": sucesso,
+            "retcode": resultado.retcode,
+            "mensagem": resultado.comment,
+            "ticket": resultado.order if sucesso else None,
+            "symbol": symbol,
+            "volume": lot,
+            "price": price,
+        }
+
+    # -----------------------------------------------------
+
+    def _calcular_sl_tp(
+        self,
+        symbol,
+        price,
+        sl_pontos,
+        tp_pontos,
+        order_type,
+    ):
+        info = mt5.symbol_info(symbol)
+        if not info:
+            raise RuntimeError(f"Não foi possível obter info de {symbol}")
+
+        point = info.point
+
+        sl = None
+        tp = None
+
+        if order_type == mt5.ORDER_TYPE_BUY:
+            if sl_pontos:
+                sl = price - (sl_pontos * point)
+            if tp_pontos:
+                tp = price + (tp_pontos * point)
+
+        elif order_type == mt5.ORDER_TYPE_SELL:
+            if sl_pontos:
+                sl = price + (sl_pontos * point)
+            if tp_pontos:
+                tp = price - (tp_pontos * point)
+
+        return sl, tp
