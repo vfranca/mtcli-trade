@@ -1,6 +1,11 @@
 """
-Monitor contínuo com multi-alvos, break-even e stop diário.
-Versão profissional resiliente.
+Monitor contínuo com:
+- Multi-alvos em R
+- Parciais configuráveis
+- Break-even automático
+- Trailing stop após X R
+- Stop diário persistente
+- EventBus integrado
 """
 
 import time
@@ -9,6 +14,9 @@ from typing import Dict, List, Set
 from ..services.positions_service import buscar_posicoes_mt5
 from ..services.close_service import fechar_posicao_mt5
 from ..services.mt5_service import MT5Service
+from ..models.risk_engine import RiskEngine
+from ..events.event_bus import event_bus
+from ..events.events import TARGET_HIT, STOP_DAILY_HIT, TRAILING_UPDATED
 
 
 class PositionsMonitor:
@@ -20,6 +28,8 @@ class PositionsMonitor:
         targets: List[float] | None = None,
         partials: List[float] | None = None,
         daily_stop: float | None = None,
+        trailing_after: float | None = 2.0,
+        trailing_step_r: float = 0.5,
         break_even_on_first: bool = True,
     ):
         self.symbol = symbol
@@ -27,26 +37,24 @@ class PositionsMonitor:
         self.targets = targets or [1.0]
         self.partials = partials or [0.5]
         self.daily_stop = daily_stop
+        self.trailing_after = trailing_after
+        self.trailing_step_r = trailing_step_r
         self.break_even_on_first = break_even_on_first
 
         self._executados: Dict[int, Set[int]] = {}
-        self._lucro_dia: float = 0.0
 
         self.mt5_service = MT5Service()
+        self.risk_engine = RiskEngine()
 
-    # =====================================================
-    # CICLO
     # =====================================================
 
     def iniciar(self):
 
-        print("Iniciando conexão MT5...")
+        print("Iniciando monitor...")
 
         if not mt5.initialize():
             codigo, msg = mt5.last_error()
             raise RuntimeError(f"Falha MT5 ({codigo}, {msg})")
-
-        print("Monitor ativo. Ctrl+C para sair.")
 
         try:
             while True:
@@ -64,8 +72,6 @@ class PositionsMonitor:
             mt5.shutdown()
 
     # =====================================================
-    # LOOP
-    # =====================================================
 
     def _ciclo(self):
 
@@ -73,17 +79,16 @@ class PositionsMonitor:
 
         self._limpar_tickets_encerrados(posicoes)
 
-        self._atualizar_lucro_dia(posicoes)
+        lucro = sum(p.profit for p in posicoes)
+        self.risk_engine.atualizar_lucro(lucro)
 
-        if self._atingiu_stop_diario():
-            print("STOP DIÁRIO ATINGIDO.")
+        if self.daily_stop and self.risk_engine.atingiu_stop(self.daily_stop):
+            event_bus.publish(STOP_DAILY_HIT)
             raise KeyboardInterrupt
 
         for pos in posicoes:
             self._verificar_alvos(pos)
 
-    # =====================================================
-    # LÓGICA R
     # =====================================================
 
     def _verificar_alvos(self, pos):
@@ -116,7 +121,11 @@ class PositionsMonitor:
             if idx in self._executados[pos.ticket]:
                 continue
 
-            percentual = self._obter_percentual(idx)
+            percentual = (
+                self.partials[idx]
+                if idx < len(self.partials)
+                else self.partials[-1]
+            )
 
             if pos.type == mt5.POSITION_TYPE_BUY:
                 alvo = entrada + (r * target)
@@ -127,12 +136,13 @@ class PositionsMonitor:
 
             if atingiu:
                 self._executar_parcial(pos, idx, percentual)
+                event_bus.publish(TARGET_HIT, ticket=pos.ticket, r=target)
 
                 if idx == 0 and self.break_even_on_first:
-                    self._mover_stop_break_even(pos)
+                    self._mover_break_even(pos)
 
-    # =====================================================
-    # PARCIAL
+        self._aplicar_trailing(pos, entrada, r, preco_atual)
+
     # =====================================================
 
     def _executar_parcial(self, pos, idx, percentual):
@@ -141,43 +151,25 @@ class PositionsMonitor:
         if not info:
             return
 
-        volume_step = info.volume_step
-        volume_parcial = pos.volume * percentual
+        step = info.volume_step
+        volume = (pos.volume * percentual // step) * step
+        volume = round(volume, 2)
 
-        # Ajuste correto ao step
-        volume_parcial = (volume_parcial // volume_step) * volume_step
-        volume_parcial = round(volume_parcial, 2)
-
-        if volume_parcial <= 0:
+        if volume <= 0 or volume >= pos.volume:
             return
 
-        if volume_parcial >= pos.volume:
-            return
-
-        print(
-            f"ALVO {self.targets[idx]}R | "
-            f"{pos.symbol} | "
-            f"ticket {pos.ticket} | "
-            f"volume {volume_parcial}"
-        )
-
-        resultado = fechar_posicao_mt5(
+        fechar_posicao_mt5(
             symbol=pos.symbol,
             ticket=pos.ticket,
-            volume=volume_parcial,
+            volume=volume,
             tipo_posicao=pos.type,
         )
 
-        if resultado and resultado.retcode == mt5.TRADE_RETCODE_DONE:
-            self._executados[pos.ticket].add(idx)
+        self._executados[pos.ticket].add(idx)
 
     # =====================================================
-    # BREAK EVEN
-    # =====================================================
 
-    def _mover_stop_break_even(self, pos):
-
-        print(f"Movendo stop para BE | ticket {pos.ticket}")
+    def _mover_break_even(self, pos):
 
         request = {
             "action": mt5.TRADE_ACTION_SLTP,
@@ -190,36 +182,47 @@ class PositionsMonitor:
         mt5.order_send(request)
 
     # =====================================================
-    # STOP DIÁRIO
+
+    def _aplicar_trailing(self, pos, entrada, r, preco_atual):
+
+        if not self.trailing_after:
+            return
+
+        if pos.type == mt5.POSITION_TYPE_BUY:
+            ativado = preco_atual >= entrada + (r * self.trailing_after)
+            if not ativado:
+                return
+
+            novo_sl = preco_atual - (r * self.trailing_step_r)
+            if novo_sl <= pos.sl:
+                return
+
+        else:
+            ativado = preco_atual <= entrada - (r * self.trailing_after)
+            if not ativado:
+                return
+
+            novo_sl = preco_atual + (r * self.trailing_step_r)
+            if novo_sl >= pos.sl:
+                return
+
+        request = {
+            "action": mt5.TRADE_ACTION_SLTP,
+            "symbol": pos.symbol,
+            "position": pos.ticket,
+            "sl": novo_sl,
+            "tp": pos.tp,
+        }
+
+        mt5.order_send(request)
+        event_bus.publish(TRAILING_UPDATED, ticket=pos.ticket)
+
     # =====================================================
-
-    def _atualizar_lucro_dia(self, posicoes):
-        self._lucro_dia = sum(p.profit for p in posicoes)
-
-    def _atingiu_stop_diario(self):
-
-        if self.daily_stop is None:
-            return False
-
-        return self._lucro_dia <= -abs(self.daily_stop)
-
-    # =====================================================
-    # AUXILIARES
-    # =====================================================
-
-    def _obter_percentual(self, idx):
-
-        if idx < len(self.partials):
-            return self.partials[idx]
-
-        return self.partials[-1]
 
     def _limpar_tickets_encerrados(self, posicoes):
 
-        tickets_abertos = {p.ticket for p in posicoes}
+        abertos = {p.ticket for p in posicoes}
 
-        tickets_salvos = list(self._executados.keys())
-
-        for ticket in tickets_salvos:
-            if ticket not in tickets_abertos:
+        for ticket in list(self._executados.keys()):
+            if ticket not in abertos:
                 del self._executados[ticket]

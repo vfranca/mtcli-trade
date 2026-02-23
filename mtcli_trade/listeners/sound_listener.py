@@ -8,6 +8,8 @@ from ..events.event_bus import event_bus
 from ..events.events import (
     POSITION_OPENED,
     POSITION_CLOSED,
+    TARGET_HIT,
+    STOP_DAILY_HIT,
 )
 
 
@@ -27,6 +29,16 @@ def on_position_closed(**data):
     beep()
 
 
-# Registro automático ao importar
+def on_target_hit(**data):
+    beep()
+
+
+def on_stop_daily_hit(**data):
+    beep()
+
+
+# Registro automático
 event_bus.subscribe(POSITION_OPENED, on_position_opened)
 event_bus.subscribe(POSITION_CLOSED, on_position_closed)
+event_bus.subscribe(TARGET_HIT, on_target_hit)
+event_bus.subscribe(STOP_DAILY_HIT, on_stop_daily_hit)
