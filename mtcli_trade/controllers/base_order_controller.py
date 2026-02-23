@@ -1,119 +1,130 @@
 """
 Controller base para envio de ordens.
-
-Responsável por:
-- Validar flags
-- Aplicar controle de risco
-- Obter tick
-- Resolver tipo de ordem
-- Criar payload
-- Enviar ao MT5
-- Normalizar resultado
-
-Subclasses devem definir:
-    ORDER_TYPE_MARKET
-    ORDER_TYPE_LIMIT
-    ORDER_TYPE_STOP
-    PRICE_FROM_TICK ("ask" ou "bid")
 """
 
 import MetaTrader5 as mt5
-from mtcli.logger import setup_logger
-from ..models.order_model import criar_ordem
-from ..models.risco_model import controlar_risco
-from ..services.mt5_service import obter_tick, enviar_ordem_mt5
-from ..conf import LOSS_LIMIT, STATUS_FILE
-
-log = setup_logger()
+from ..services.mt5_service import MT5Service
+from ..strategies.strategy_factory import StrategyFactory
+from ..conf import DIGITOS
 
 
 class BaseOrderController:
 
-    ORDER_TYPE_MARKET = None
-    ORDER_TYPE_LIMIT = None
-    ORDER_TYPE_STOP = None
-    PRICE_FROM_TICK = None
+    ORDER_TYPE_MARKET = {
+        "buy": mt5.ORDER_TYPE_BUY,
+        "sell": mt5.ORDER_TYPE_SELL,
+    }
 
-    def executar(self, symbol, lot, sl, tp, limit, stop, preco):
-        """
-        Executa fluxo completo de envio de ordem.
+    ORDER_TYPE_LIMIT = {
+        "buy": mt5.ORDER_TYPE_BUY_LIMIT,
+        "sell": mt5.ORDER_TYPE_SELL_LIMIT,
+    }
 
-        Returns:
-            dict: Resultado normalizado.
+    ORDER_TYPE_STOP = {
+        "buy": mt5.ORDER_TYPE_BUY_STOP,
+        "sell": mt5.ORDER_TYPE_SELL_STOP,
+    }
 
-        Raises:
-            ValueError
-            RuntimeError
-        """
-        self._validar_flags(limit, stop)
+    PRICE_FROM_TICK = {
+        "buy": "ask",
+        "sell": "bid",
+    }
 
-        if controlar_risco(STATUS_FILE, LOSS_LIMIT):
-            msg = "Envio bloqueado por controle de risco"
-            log.warning(msg)
-            raise RuntimeError(msg)
+    def __init__(self, side: str):
+        self.side = side.lower()
+        self.mt5 = MT5Service()
 
-        tick = obter_tick(symbol)
+    # =====================================================
+    # EXECUÇÃO PRINCIPAL
+    # =====================================================
 
-        order_type, price, pending = self._resolver_tipo_ordem(
-            tick=tick,
-            limit=limit,
-            stop=stop,
-            preco=preco,
+    def executar(
+        self,
+        symbol: str,
+        lot: float,
+        sl: float | None,
+        tp: float | None,
+        limit: bool,
+        stop: bool,
+        preco: float | None,
+    ):
+        tick = self.mt5.obter_tick(symbol)
+
+        strategy = StrategyFactory.create(limit, stop)
+
+        order_type = self._definir_tipo(strategy)
+        price = strategy.definir_preco(self, tick, preco)
+
+        point = mt5.symbol_info(symbol).point
+
+        sl_price = self._calcular_sl(price, sl, point)
+        tp_price = self._calcular_tp(price, tp, point)
+
+        request = self._montar_request(
+            symbol, lot, order_type, price, sl_price, tp_price
         )
 
-        ordem = criar_ordem(
-            symbol=symbol,
-            lot=lot,
-            sl=sl,
-            tp=tp,
-            price=price,
-            order_type=order_type,
-            pending=pending,
-        )
+        return self.mt5.enviar_request(request)
 
-        resultado_mt5 = enviar_ordem_mt5(ordem)
+    # =====================================================
+    # AUXILIARES
+    # =====================================================
 
-        return self._normalizar_resultado(resultado_mt5, symbol, lot, price)
+    def _definir_tipo(self, strategy):
+        if strategy.__class__.__name__ == "MarketStrategy":
+            return self.ORDER_TYPE_MARKET[self.side]
 
-    # -----------------------------------------------------
+        if strategy.__class__.__name__ == "LimitStrategy":
+            return self.ORDER_TYPE_LIMIT[self.side]
 
-    @staticmethod
-    def _validar_flags(limit, stop):
-        if limit and stop:
-            raise ValueError("Use apenas --limit OU --stop, nunca ambos.")
+        return self.ORDER_TYPE_STOP[self.side]
 
-    def _resolver_tipo_ordem(self, tick, limit, stop, preco):
-        if limit:
-            if preco is None:
-                raise ValueError("Ordens limit exigem --preco")
-            return self.ORDER_TYPE_LIMIT, preco, True
+    def _calcular_sl(self, price, sl, point):
+        if sl is None:
+            return None
 
-        if stop:
-            if preco is None:
-                raise ValueError("Ordens stop exigem --preco")
-            return self.ORDER_TYPE_STOP, preco, True
+        if self.side == "buy":
+            valor = price - (sl * point)
+        else:
+            valor = price + (sl * point)
 
-        price = getattr(tick, self.PRICE_FROM_TICK)
-        return self.ORDER_TYPE_MARKET, price, False
+        return round(valor, DIGITOS)
 
-    # -----------------------------------------------------
+    def _calcular_tp(self, price, tp, point):
+        if tp is None:
+            return None
 
-    @staticmethod
-    def _normalizar_resultado(res, symbol, lot, price):
-        if res is None:
-            raise RuntimeError("Nenhuma resposta recebida do MetaTrader 5")
+        if self.side == "buy":
+            valor = price + (tp * point)
+        else:
+            valor = price - (tp * point)
 
-        sucesso = res.retcode in (
-            mt5.TRADE_RETCODE_DONE,
-            mt5.TRADE_RETCODE_PLACED,
-        )
+        return round(valor, DIGITOS)
 
-        return {
-            "sucesso": sucesso,
-            "retcode": res.retcode,
-            "mensagem": res.comment,
-            "ticket": res.order if sucesso else None,
+    def _montar_request(self, symbol, lot, order_type, price, sl, tp):
+
+        request = {
+            "action": mt5.TRADE_ACTION_DEAL
+            if order_type in (
+                mt5.ORDER_TYPE_BUY,
+                mt5.ORDER_TYPE_SELL,
+            )
+            else mt5.TRADE_ACTION_PENDING,
             "symbol": symbol,
             "volume": lot,
+            "type": order_type,
             "price": price,
+            "deviation": 10,
+            "magic": 123456,
+            "comment": "mtcli-trade",
+            "type_time": mt5.ORDER_TIME_GTC,
+            "type_filling": mt5.ORDER_FILLING_IOC,
         }
+
+        if sl is not None:
+            request["sl"] = sl
+
+        if tp is not None:
+            request["tp"] = tp
+
+        return request

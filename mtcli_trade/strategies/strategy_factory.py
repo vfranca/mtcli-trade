@@ -1,5 +1,5 @@
 """
-Factory para seleção da Strategy.
+Factory de estratégias de envio de ordem.
 """
 
 from .market_strategy import MarketStrategy
