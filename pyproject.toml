@@ -1,15 +1,40 @@
 [project]
 name = "mtcli-trade"
-version = "1.6.2"
+version = "1.6.3"
 description = "Plugin mtcli para gerenciamento de órdens"
 readme = "README.md"
+license = "MIT"
 authors = [
-    { name = "Valmir França da Silva", email = "vfranca3@gmail.com" }
+    { name = "Valmir França", email = "vfranca3@gmail.com" }
 ]
-license = "GPL-3.0"
 requires-python = ">=3.10,<3.14.0"
+
+keywords = [
+    "trading",
+    "orders",
+    "risk manager",
+    "risk",
+    "metatrader5",
+    "mt5",
+    "cli",
+    "acessibilidade",
+    "screen reader friendly"
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+
 dependencies = [
-    "mtcli>=1.18.1",
+    "mtcli>=3.7.0",
     "mtcli-risco>=2.2.0,<3.0.0",
 ]
 
@@ -20,7 +45,7 @@ repository = "https://github.com/vfranca/mtcli-trade"
 issues = "https://github.com/vfranca/mtcli-trade/issues"
 
 [project.entry-points."mtcli.plugins"]
-mtcli_trade = "mtcli_trade.plugin:register"
+mtcli-trade = "mtcli_trade.plugin:register"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
