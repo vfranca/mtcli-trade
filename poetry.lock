@@ -505,14 +505,14 @@ pyyaml = ">=5.1"
 
 [[package]]
 name = "mtcli"
-version = "3.7.1"
+version = "3.7.2"
 description = "Aplicativo CLI para exibir gráficos do MetaTrader 5 screen reader friendly"
 optional = false
 python-versions = "<3.14.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "mtcli-3.7.1-py3-none-any.whl", hash = "sha256:bd2262d9208fd3ea5409acde04d3ea706b05bfe64df288217298abf116fd1ca5"},
-    {file = "mtcli-3.7.1.tar.gz", hash = "sha256:b5b4b83680d199336d71de65433f9a124c5785b8034f3a9189d048d2f0e25534"},
+    {file = "mtcli-3.7.2-py3-none-any.whl", hash = "sha256:53e9b422ab1d556c3c71047d779effdfcbc9c53f75f3fdc7c6ce8294b52ef910"},
+    {file = "mtcli-3.7.2.tar.gz", hash = "sha256:281e9c16e8a9a53df10a94c79bdecb11c2b78ac59e8191a02798e4b3f74c3680"},
 ]
 
 [package.dependencies]
@@ -521,20 +521,20 @@ metatrader5 = ">=5.0.5260,<6.0.0"
 
 [[package]]
 name = "mtcli-risco"
-version = "2.4.2"
+version = "2.5.1"
 description = "Plugin mtcli para controle de loss diário"
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["main"]
 files = [
-    {file = "mtcli_risco-2.4.2-py3-none-any.whl", hash = "sha256:cbd69072ff670e54ad602e6af110ed56668f34dfe8731ebcc52998504c23403e"},
-    {file = "mtcli_risco-2.4.2.tar.gz", hash = "sha256:40d5e2eb00aafd2a4ce1f0614ce1e5a3329aa0a48b7ee619cef97653a261dcf3"},
+    {file = "mtcli_risco-2.5.1-py3-none-any.whl", hash = "sha256:83f4ffddb8b322f4716242b5737bd51175666e8670d44509d7969c5a4bbed8c2"},
+    {file = "mtcli_risco-2.5.1.tar.gz", hash = "sha256:6f3c33510250038df9b827cbd05920d275f14ac2ee1d9a0ae819a32fad015549"},
 ]
 
 [package.dependencies]
 click = ">=8.3.1,<9.0.0"
 metatrader5 = ">=5.0.5572,<6.0.0"
-mtcli = ">=3.7.0"
+mtcli = ">=3.7.2"
 
 [[package]]
 name = "mypy-extensions"
@@ -1132,4 +1132,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14.0"
-content-hash = "f9607ef2ac358193420f352b4e8a02573ea1ee961772e03cf547474c42e6c9c9"
+content-hash = "d6c8f8bef71397dd94419cba8411f1af27841b6f3e75e85d1ef00b23c7858b76"
