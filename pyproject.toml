@@ -1,6 +1,6 @@
 [project]
 name = "mtcli-trade"
-version = "1.6.4"
+version = "1.7.0.dev0"
 description = "Plugin mtcli para gerenciamento de órdens"
 readme = "README.md"
 license = "MIT"
@@ -35,7 +35,6 @@ classifiers = [
 
 dependencies = [
     "mtcli>=3.7.0",
-    "mtcli-risco>=2.2.0,<2.6",
 ]
 
 [project.urls]

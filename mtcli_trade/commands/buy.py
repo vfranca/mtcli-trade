@@ -2,11 +2,10 @@
 
 import click
 import MetaTrader5 as mt5
-from mtcli.conecta import conectar, shutdown
+from mtcli.mt5_context import mt5_conexao
 from mtcli.logger import setup_logger
-from mtcli_trade.models.ordem_model import criar_ordem, enviar_ordem, inicializar
-from mtcli_trade.models.risco_model import controlar_risco
-from mtcli_trade.conf import (
+from ..models.ordem_model import criar_ordem, enviar_ordem, inicializar
+from ..conf import (
     SYMBOL,
     LOT,
     SL,
@@ -15,7 +14,7 @@ from mtcli_trade.conf import (
     STATUS_FILE,
 )
 
-log = setup_logger()
+log = setup_logger(__name__)
 
 
 @click.command(
@@ -36,34 +35,21 @@ log = setup_logger()
 @click.option("--preco", "-pr", type=float, default=None, help="Preço da ordem limit")
 def buy(symbol, lot, sl, tp, limit, preco):
     """Compra a mercado ou pendente com SL e TP."""
-    conectar()
 
-    # ⚠ Verifica risco antes de enviar qualquer ordem
-    if controlar_risco(STATUS_FILE, LOSS_LIMIT):
-        click.echo("Ordem bloqueada: limite de prejuízo diário atingido.")
-        log.info("Envio de ordem bloqueado por risco.")
-        shutdown()
-        return
-
-    tick = inicializar(symbol)
-    if not tick:
-        return
-
-    if limit:
-        if preco is None:
-            click.echo("Para ordens pendentes, defina o --preco")
-            shutdown()
+    with mt5_conexao():
+        tick = inicializar(symbol)
+        if not tick:
             return
-        price = preco
-        order_type = mt5.ORDER_TYPE_BUY_LIMIT
-    else:
-        price = tick.ask
-        order_type = mt5.ORDER_TYPE_BUY
 
-    ordem = criar_ordem(symbol, lot, sl, tp, price, order_type, limit)
-    enviar_ordem(ordem, limit)
-    shutdown()
+        if limit:
+            if preco is None:
+                click.echo("Para ordens pendentes, defina o --preco")
+                return
+            price = preco
+            order_type = mt5.ORDER_TYPE_BUY_LIMIT
+        else:
+            price = tick.ask
+            order_type = mt5.ORDER_TYPE_BUY
 
-
-if __name__ == "__main__":
-    buy()
+        ordem = criar_ordem(symbol, lot, sl, tp, price, order_type, limit)
+        enviar_ordem(ordem, limit)

@@ -520,23 +520,6 @@ click = ">=8.2.1,<9.0.0"
 metatrader5 = ">=5.0.5260,<6.0.0"
 
 [[package]]
-name = "mtcli-risco"
-version = "2.5.1"
-description = "Plugin mtcli para controle de loss diário"
-optional = false
-python-versions = "<3.14,>=3.10"
-groups = ["main"]
-files = [
-    {file = "mtcli_risco-2.5.1-py3-none-any.whl", hash = "sha256:83f4ffddb8b322f4716242b5737bd51175666e8670d44509d7969c5a4bbed8c2"},
-    {file = "mtcli_risco-2.5.1.tar.gz", hash = "sha256:6f3c33510250038df9b827cbd05920d275f14ac2ee1d9a0ae819a32fad015549"},
-]
-
-[package.dependencies]
-click = ">=8.3.1,<9.0.0"
-metatrader5 = ">=5.0.5572,<6.0.0"
-mtcli = ">=3.7.2"
-
-[[package]]
 name = "mypy-extensions"
 version = "1.1.0"
 description = "Type system extensions for programs checked with the mypy type checker."
@@ -1132,4 +1115,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14.0"
-content-hash = "d6c8f8bef71397dd94419cba8411f1af27841b6f3e75e85d1ef00b23c7858b76"
+content-hash = "3bad81955604c55e5fa7b51c730cd22a22bac3b25d3f3380aa9d6f0975ab1c02"

@@ -2,11 +2,11 @@
 
 import click
 import MetaTrader5 as mt5
-from mtcli.conecta import conectar, shutdown
+from mtcli.mt5_context import mt5_conexao
 from mtcli.logger import setup_logger
-from mtcli_trade.models.posicoes_model import existem_posicoes, encerra_posicoes
+from ..models.posicoes_model import existem_posicoes, encerra_posicoes
 
-log = setup_logger()
+log = setup_logger(__name__)
 
 
 @click.command(
@@ -31,7 +31,3 @@ def zera(symbol):
         return
     else:
         click.echo("Falha ao encerrar posiçõs")
-
-
-if __name__ == "__main__":
-    zera()

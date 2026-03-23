@@ -1,6 +1,6 @@
 import click
-from mtcli_trade.controllers.orders_controller import obter_ordens_pendentes
-from mtcli_trade.views.orders_view import exibir_ordens
+from ..controllers.orders_controller import obter_ordens_pendentes
+from ..views.orders_view import exibir_ordens
 
 
 @click.command("orders", help="Lista todas as ordens pendentes abertas, com detalhes.")
@@ -11,6 +11,3 @@ def orders(symbol):
     ordens = obter_ordens_pendentes(symbol)
     exibir_ordens(ordens, symbol)
 
-
-if __name__ == "__main__":
-    orders()
